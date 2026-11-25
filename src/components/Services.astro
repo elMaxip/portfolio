@@ -19,9 +19,12 @@ const services = await getServices();
             <p class="monto">Desde {formatPrice(data.priceFrom)}</p>
           </div>
           <p class="detalle">{data.text}</p>
-          <a class="nav sub" href={whatsappUrl(site.whatsapp.number, data.message)}>
+          <a
+            class="nav sub"
+            href={whatsappUrl(site.whatsapp.number, data.message)}
+            aria-label={`${site.services.quote}: ${data.name}`}
+          >
             {site.services.quote}
-            <span class="oculto">: {data.name}</span>
           </a>
         </div>
       ))
