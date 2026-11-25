@@ -1,5 +1,7 @@
 ---
+import Appearance from "../islands/Appearance";
 import { getSite } from "../lib/content";
+import "../styles/appearance.css";
 const { footer } = await getSite();
 ---
 
@@ -8,6 +10,7 @@ const { footer } = await getSite();
   <div>
     {footer.links.map((l) => <a class="nav" href={l.href}>{l.label}</a>)}
   </div>
+  <Appearance client:idle={{ timeout: 1500 }} />
 </footer>
 
 <style>
@@ -16,7 +19,7 @@ const { footer } = await getSite();
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 4px 32px;
+    gap: 8px 32px;
     box-sizing: border-box;
     min-height: 80px;
     padding: 10px var(--margen);
@@ -35,8 +38,7 @@ const { footer } = await getSite();
   }
   @media (max-width: 759px) {
     footer {
-      /* Espacio para el botón Apariencia */
-      padding-right: 84px;
+      column-gap: 12px;
     }
   }
 </style>

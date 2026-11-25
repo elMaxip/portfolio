@@ -1,4 +1,7 @@
-/** Marca en qué sección está la pantalla y abre el menú en celular. Solo trabaja al desplazarse. */
+/** Cuánto hay que moverse para esconder o mostrar el dial: menos que eso es un temblor del dedo. */
+const NUDGE = 8;
+
+/** Marca en qué sección está la pantalla, y en celular esconde el dial y abre el menú. Solo trabaja al desplazarse. */
 export function startNav(): void {
   const nav = document.querySelector<HTMLElement>("[data-carta]");
   const button = nav?.querySelector("button");
@@ -13,7 +16,8 @@ export function startNav(): void {
   let wanted = -1;
   let active = 0;
   let raf = 0;
-  let hush = 0;
+  /** Desde dónde se mide si la página sube o baja. */
+  let from = 0;
 
   function measure(): void {
     const max = document.documentElement.scrollHeight - innerHeight;
@@ -25,10 +29,20 @@ export function startNav(): void {
     request();
   }
 
+  /** El dial se esconde al bajar y vuelve al subir, arriba de todo y con el menú abierto. */
+  function dodge(y: number): void {
+    if (y < NUDGE || isOpen()) nav!.removeAttribute("data-baja");
+    else if (Math.abs(y - from) < NUDGE) return;
+    else nav!.toggleAttribute("data-baja", y > from);
+    from = y;
+  }
+
   function update(): void {
     raf = 0;
     const max = Math.max(1, document.documentElement.scrollHeight - innerHeight);
     const progress = Math.min(1, Math.max(0, scrollY / max));
+    // Acotado: en iPhone la página rebota en los bordes
+    dodge(progress * max);
     // Al llegar a una sección, la circunferencia queda justo sobre su círculo
     let last = stops.length - 1;
     while (last > 0 && stops[last] > scrollY + 2) last--;
@@ -49,10 +63,6 @@ export function startNav(): void {
     links[active].removeAttribute("aria-current");
     links[i].setAttribute("aria-current", "location");
     active = i;
-    // El nombre de la sección se asoma un momento
-    nav!.toggleAttribute("data-avisa", true);
-    clearTimeout(hush);
-    hush = window.setTimeout(() => nav!.removeAttribute("data-avisa"), 1800);
   }
   function request(): void {
     raf ||= requestAnimationFrame(update);

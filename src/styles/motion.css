@@ -75,8 +75,7 @@
     }
     /* En una regla aparte: al compactar el CSS, junto a `animation` queda inválida */
     :is(.titulo, .luz) {
-      /* Sin el margen de scroll-padding, para que empiece al entrar en pantalla */
-      animation-timeline: view(block 0px);
+      animation-timeline: view();
     }
   }
 }

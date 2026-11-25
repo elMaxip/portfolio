@@ -1,8 +1,6 @@
 html {
   color-scheme: dark;
   scroll-behavior: smooth;
-  /* Lo que recibe el foco no queda debajo del botón Apariencia */
-  scroll-padding-bottom: 80px;
   /* Barra de desplazamiento delgada y con los colores del sitio */
   scrollbar-width: thin;
   scrollbar-color: var(--borde) var(--fondo);

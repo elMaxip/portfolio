@@ -75,8 +75,7 @@
   transition: opacity 400ms ease;
 }
 .carta[data-arriba] .carta-trazos,
-.carta:has(a:hover) .carta-trazos,
-.carta[data-avisa] .carta-trazos {
+.carta:has(a:hover) .carta-trazos {
   opacity: 0.75;
 }
 .carta-aguja {
@@ -163,8 +162,7 @@
   }
   .carta[data-arriba] .carta-texto,
   .carta:has(a:hover) .carta-texto,
-  .carta:focus-within:has(:focus-visible) .carta-texto,
-  .carta[data-avisa] a[aria-current] .carta-texto {
+  .carta:focus-within:has(:focus-visible) .carta-texto {
     opacity: 1;
     pointer-events: auto;
     transform: none;
@@ -205,7 +203,15 @@
     cursor: pointer;
     transition:
       background-color 160ms ease,
-      color 160ms ease;
+      color 160ms ease,
+      opacity 200ms ease,
+      transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  /* Al bajar se esconde para no tapar textos. Sin visibility: el teclado debe poder llegar */
+  .carta[data-baja]:not([data-abierto], :has(:focus-visible)) .carta-dial {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-72px);
   }
   .carta-dial[aria-expanded="true"] {
     background: var(--texto);

@@ -72,7 +72,7 @@ function Group({ attribute, label, options }: (typeof GROUPS)[number]) {
   );
 }
 
-/** Botón fijo y panel para elegir la letra y el dibujo de los planetas. */
+/** Botón del pie y panel para elegir la letra y el dibujo de los planetas. */
 export default function Appearance() {
   const [open, setOpen] = useState(false);
   const root = useRef<HTMLElement>(null);
@@ -109,7 +109,7 @@ export default function Appearance() {
         onClick={() => setOpen(!open)}
       >
         <span className="ajustes-icono" aria-hidden="true" />
-        <span className="ajustes-texto">Apariencia</span>
+        Apariencia
       </button>
       <div id="panel-apariencia" className="ajustes-panel" hidden={!open}>
         {GROUPS.map((group) => (

@@ -1,14 +1,8 @@
 /* Botón y panel Apariencia (Appearance.tsx) */
 .ajustes {
-  position: fixed;
-  right: max(16px, env(safe-area-inset-right));
-  bottom: max(16px, env(safe-area-inset-bottom));
+  position: relative;
   z-index: 300;
-  display: flex;
-  /* El panel se ve arriba, pero va después del botón para el teclado */
-  flex-direction: column-reverse;
-  align-items: flex-end;
-  gap: 10px;
+  margin-inline-start: auto;
   font-size: 1rem;
   line-height: 1.4;
 }
@@ -40,12 +34,16 @@
   background: radial-gradient(currentColor 34%, transparent 40%) 0 0/4px 4px;
   box-shadow: 0 0 0 1.5px currentColor;
 }
+/* Se abre hacia arriba, pero va después del botón para el teclado */
 .ajustes-panel {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 10px);
   display: flex;
   flex-direction: column;
   gap: 18px;
   box-sizing: border-box;
-  width: min(340px, calc(100vw - 32px));
+  width: min(340px, calc(100vw - 2 * var(--margen)));
   /* En pantallas muy bajas se desplaza por dentro */
   max-height: calc(100dvh - 90px);
   overflow-y: auto;
@@ -119,18 +117,4 @@
   font-family: var(--f-mono);
   font-size: 1.0625rem;
   font-weight: 700;
-}
-@media (max-width: 759px) {
-  .ajustes-boton {
-    justify-content: center;
-    width: 48px;
-    padding: 0;
-  }
-  .ajustes-texto {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip-path: inset(50%);
-  }
 }
