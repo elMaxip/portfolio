@@ -1,3 +1,5 @@
+import { follow } from "./pointer";
+
 /** Las letras del nombre reaccionan al cursor: engordan (minimalista) o se deforman (retro). */
 export function startName(): void {
   const title = document.querySelector<HTMLElement>("#nombre");
@@ -37,12 +39,19 @@ export function startName(): void {
     }
   };
 
-  stage.addEventListener("pointermove", (e) => {
-    if (reduced.matches) return;
-    x = e.clientX;
-    y = e.clientY;
-    raf ||= requestAnimationFrame(apply);
+  let off = 0;
+  follow(stage, {
+    move(cx, cy) {
+      if (reduced.matches) return;
+      clearTimeout(off);
+      x = cx;
+      y = cy;
+      raf ||= requestAnimationFrame(apply);
+    },
+    end(touch) {
+      clearTimeout(off);
+      off = window.setTimeout(clear, touch ? 500 : 0);
+    },
   });
-  stage.addEventListener("pointerleave", clear);
   new MutationObserver(clear).observe(document.documentElement, { attributeFilter: ["data-tipo"] });
 }

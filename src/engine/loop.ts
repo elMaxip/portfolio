@@ -1,4 +1,5 @@
 import { Orbit } from "./orbit";
+import { follow } from "./pointer";
 import { chosenStyle, loadStyle, type CreateStyle } from "./styles";
 import type { Env, Painter, SceneKey, Style, StyleName, View } from "./types";
 
@@ -32,7 +33,7 @@ export function startEngine(name: StyleName, create: CreateStyle): Engine {
     reduce: REDUCED.matches,
     paused: html.hasAttribute("data-paused"),
     phone: SMALL.matches,
-    mouse: { x: -9999, y: -9999 },
+    mouse: { x: -9999, y: -9999, force: 1 },
     orbit: new Orbit(),
   };
 
@@ -87,6 +88,8 @@ export function startEngine(name: StyleName, create: CreateStyle): Engine {
     wake();
   };
 
+  /** Se levantó el dedo: el efecto del planeta de portada se apaga de a poco. */
+  let letGo = false;
   let raf = 0;
   let last = 0;
   function wake(): void {
@@ -100,6 +103,13 @@ export function startEngine(name: StyleName, create: CreateStyle): Engine {
     last = now;
     const still = isStill();
     let more = false;
+    if (letGo) {
+      env.mouse.force = Math.max(0, env.mouse.force - dt / 0.9);
+      if (!env.mouse.force) {
+        letGo = false;
+        env.mouse.x = env.mouse.y = -9999;
+      }
+    }
     for (const sc of scenes) {
       if (!sc.visible) continue;
       if (!sc.fitted) fit(sc);
@@ -233,14 +243,19 @@ export function startEngine(name: StyleName, create: CreateStyle): Engine {
   if (hero && stage) {
     // Las letras del nombre entran más delgadas: al terminar, el texto ocupa otro espacio
     stage.addEventListener("animationend", measureText);
-    stage.addEventListener("pointermove", (e) => {
-      const b = hero.el.getBoundingClientRect();
-      const k = b.width ? hero.el.clientWidth / b.width : 1;
-      env.mouse.x = (e.clientX - b.left) * k;
-      env.mouse.y = (e.clientY - b.top) * k;
-    });
-    stage.addEventListener("pointerleave", () => {
-      env.mouse.x = env.mouse.y = -9999;
+    follow(stage, {
+      move(x, y) {
+        const b = hero.el.getBoundingClientRect();
+        const k = b.width ? hero.el.clientWidth / b.width : 1;
+        env.mouse.x = (x - b.left) * k;
+        env.mouse.y = (y - b.top) * k;
+        env.mouse.force = 1;
+        letGo = false;
+      },
+      end(touch) {
+        letGo = touch;
+        if (!touch) env.mouse.x = env.mouse.y = -9999;
+      },
     });
   }
 

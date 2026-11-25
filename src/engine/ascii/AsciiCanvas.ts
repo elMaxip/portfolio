@@ -1,7 +1,7 @@
 import { hash, ramp, type Star } from "../math";
 import { rockPoints } from "../rock";
 import { textMask, type MaskGrid } from "../textmask";
-import type { Vec3, View } from "../types";
+import type { Mouse, Vec3, View } from "../types";
 import { TEX_H, TEX_W } from "./surface";
 
 /** Del más tenue al más denso: se elige según el brillo. */
@@ -60,7 +60,7 @@ export interface BallOptions {
   emissive?: boolean;
   /** 0: caracteres dispersos · 1: planeta formado */
   form?: number;
-  mouse?: { x: number; y: number };
+  mouse?: Mouse;
 }
 
 export interface RingOptions {
@@ -240,7 +240,7 @@ export class AsciiCanvas {
           const d2 = dx * dx + dy * dy;
           if (d2 < 19600 && d2 > 1) {
             const d = Math.sqrt(d2);
-            const k = 1 - d / 140;
+            const k = (1 - d / 140) * mouse.force;
             const push = k * k * 46;
             qx += (dx / d) * push;
             qy += (dy / d) * push;

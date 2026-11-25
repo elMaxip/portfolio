@@ -1,4 +1,5 @@
 import type { Engine } from "./loop";
+import { follow } from "./pointer";
 import type { View } from "./types";
 
 /**
@@ -86,17 +87,22 @@ export function startLightRay(engine: Engine): void {
     draw();
   });
 
-  const follow = (e: PointerEvent) => {
-    const q = box.getBoundingClientRect();
-    if (!R) return;
-    wanted = (e.clientX - q.left - q.width / 2) / R;
-    // En pausa el motor no dibuja: se responde de inmediato
-    if (engine.env.paused || engine.env.reduce) {
-      b = wanted;
-      draw();
-    }
-  };
-  box.addEventListener("pointerdown", follow);
-  box.addEventListener("pointermove", follow);
-  for (const n of ["pointerleave", "pointercancel"]) box.addEventListener(n, () => (wanted = null));
+  let off = 0;
+  follow(box, {
+    move(x) {
+      if (!R) return;
+      clearTimeout(off);
+      const q = box.getBoundingClientRect();
+      wanted = (x - q.left - q.width / 2) / R;
+      // En pausa el motor no dibuja: se responde de inmediato
+      if (engine.env.paused || engine.env.reduce) {
+        b = wanted;
+        draw();
+      }
+    },
+    end(touch) {
+      clearTimeout(off);
+      off = window.setTimeout(() => (wanted = null), touch ? 1200 : 0);
+    },
+  });
 }

@@ -1,7 +1,7 @@
 import { hash, ramp, type Star } from "../math";
 import { rockPoints } from "../rock";
 import { textMask, type MaskGrid } from "../textmask";
-import type { Vec3, View } from "../types";
+import type { Mouse, Vec3, View } from "../types";
 
 export const GLYPHS = "·:+x*oae08-|<>/=";
 
@@ -117,7 +117,7 @@ export interface BallOptions {
   /** Proporción de puntos que se dibujan. */
   thin?: number;
   halo?: number;
-  mouse?: { x: number; y: number };
+  mouse?: Mouse;
 }
 
 export interface RingOptions {
@@ -309,7 +309,7 @@ export class SoftCanvas {
         const d2 = dx * dx + dy * dy;
         if (d2 < 19600 && d2 > 1) {
           const d = Math.sqrt(d2);
-          const k = 1 - d / 140;
+          const k = (1 - d / 140) * mouse.force;
           const push = k * k * 22;
           px += (dx / d) * push;
           py += (dy / d) * push;

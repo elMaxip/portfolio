@@ -2,6 +2,13 @@ import type { Orbit } from "./orbit";
 
 export type Vec3 = readonly [number, number, number];
 
+export interface Mouse {
+  x: number;
+  y: number;
+  /** Fuerza del efecto, de 0 a 1. Al levantar el dedo se apaga de a poco. */
+  force: number;
+}
+
 export type SceneKey = "hero" | "sistema" | "retrato" | "faseA" | "faseB" | "faseC" | "horizonte";
 
 /** Lo que cada estilo necesita saber de la página. Lo mantiene al día loop.ts. */
@@ -9,8 +16,8 @@ export interface Env {
   reduce: boolean;
   paused: boolean;
   phone: boolean;
-  /** Cursor, en píxeles CSS dentro del lienzo de la portada. */
-  mouse: { x: number; y: number };
+  /** Cursor o dedo, en píxeles CSS dentro del lienzo de la portada. */
+  mouse: Mouse;
   readonly orbit: Orbit;
 }
 
