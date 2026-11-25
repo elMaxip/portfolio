@@ -5,12 +5,7 @@ const site = await getSite();
 
 <header data-bloque="1">
   <a class="nav t-marca" href="#inicio" translate="no"><span aria-hidden="true">&gt;&nbsp;</span>{site.name}</a>
-  <nav class="menu" aria-label="Principal">
-    <a class="nav" href="#sobre-mi">Sobre mí</a>
-    <a class="nav" href="#proyectos">Proyectos</a>
-    <a class="nav" href="#precios">Precios</a>
-    <button class="tecla solo-js" type="button" data-pausar>Pausar</button>
-  </nav>
+  <button class="tecla solo-js" type="button" data-pausar>Pausar</button>
 </header>
 
 <style>
@@ -26,30 +21,35 @@ const site = await getSite();
   .t-marca {
     margin-inline-start: -10px;
   }
-  .menu {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 4px 12px;
-    font-weight: 500;
-  }
   .tecla {
     min-height: 44px;
     padding: 0 16px;
     background: var(--fondo);
   }
-  @media (max-width: 759px) {
-    .menu {
-      gap: 4px 6px;
-      margin-inline-start: -4px;
-      font-size: 0.9375rem;
-    }
-    .menu .nav {
-      padding-inline: 4px;
+  @media (max-width: 1099px) {
+    header {
+      /* Espacio para el dial de navegación */
+      padding-block: 16px;
+      padding-right: calc(max(16px, env(safe-area-inset-right)) + 60px);
     }
     .tecla {
-      padding: 0 10px;
+      min-height: 48px;
+    }
+  }
+  @media (max-width: 759px) {
+    .tecla {
+      padding: 0 12px;
       font-size: 0.9375rem;
+    }
+  }
+  @media (max-width: 359px) {
+    header {
+      gap: 4px 12px;
+    }
+    header .t-marca {
+      padding-inline: 4px;
+      margin-inline-start: -4px;
+      font-size: 0.875rem;
     }
   }
 </style>

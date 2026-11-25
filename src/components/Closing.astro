@@ -4,7 +4,7 @@ import Footer from "./Footer.astro";
 const site = await getSite();
 ---
 
-<div class="cierre">
+<div class="cierre" id="contacto">
   <canvas class="escena" data-escena="horizonte" aria-hidden="true"></canvas>
   <section aria-labelledby="titulo-cierre">
     <h2 id="titulo-cierre" class="t-final" aria-label={site.closing.title} data-bloque="1">
@@ -47,5 +47,14 @@ const site = await getSite();
     font-size: 1.25rem;
     line-height: 1.5;
     text-wrap: balance;
+  }
+  @media (max-width: 759px) {
+    .cierre {
+      min-height: 0;
+    }
+    section {
+      gap: 28px;
+      padding-bottom: 290px;
+    }
   }
 </style>

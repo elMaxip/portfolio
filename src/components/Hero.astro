@@ -96,7 +96,7 @@ const words = [
   }
   @media (max-width: 759px) {
     .hero {
-      min-height: clamp(760px, 100svh, 940px);
+      min-height: clamp(660px, 100svh, 940px);
     }
     .portada {
       align-items: center;
@@ -111,6 +111,11 @@ const words = [
     .acciones {
       flex-direction: column;
       gap: 12px;
+    }
+  }
+  @media (max-width: 359px) {
+    .hero {
+      min-height: 760px;
     }
   }
   @media (max-width: 389px) {

@@ -1,0 +1,85 @@
+---
+import "../styles/nav.css";
+
+/**
+ * Carta de navegación: un eje con un círculo por sección, que sigue la pantalla.
+ * En computador va en el margen derecho; en celular se abre desde un dial.
+ * El movimiento es de engine/nav.ts.
+ */
+const links = [
+  { href: "#inicio", label: "Inicio" },
+  { href: "#sobre-mi", label: "Sobre mí" },
+  { href: "#proyectos", label: "Proyectos" },
+  { href: "#proceso", label: "Así trabajo" },
+  { href: "#precios", label: "Precios" },
+  { href: "#contacto", label: "Contacto" },
+];
+const ticks = Array.from({ length: 36 }, (_, i) => i * 10);
+---
+
+<nav class="carta" aria-label="Principal" data-carta data-arriba>
+  <button class="carta-dial solo-js" type="button" aria-expanded="false" aria-controls="carta-lista" aria-label="Menú">
+    <svg viewBox="-24 -24 48 48" aria-hidden="true">
+      <g stroke="currentColor" fill="none">
+        {ticks.map((a) => <path d={`M0 ${a % 60 ? -15.5 : -13.5}V-18`} transform={`rotate(${a})`} stroke-width={a % 60 ? 0.8 : 1.4} />)}
+        <circle r="9.5" stroke-width="0.8" stroke-dasharray="1.5 2" />
+        <g class="carta-aguja">
+          <path d="M0 0V-18" stroke-width="1.2" />
+          <circle cy="-9.5" r="2.6" fill="currentColor" stroke="none" />
+        </g>
+        <circle r="2" fill="currentColor" stroke="none" />
+      </g>
+    </svg>
+  </button>
+  <div class="carta-panel" id="carta-lista">
+    <span class="carta-eje" aria-hidden="true"></span>
+    <span class="carta-marca" aria-hidden="true">
+      <svg viewBox="-160 -160 320 320">
+        <g fill="none" stroke="currentColor">
+          <g class="carta-trazos">
+            <circle r="86" stroke-dasharray="1 5" />
+            <circle r="140" stroke-dasharray="10 6 1 6" />
+            <g class="carta-aguja">
+              <path d="M0 -30V-152" stroke-dasharray="3 3" />
+              <circle cy="-86" r="2.5" fill="currentColor" stroke="none" />
+              <path d="M-5 -140H5" />
+            </g>
+            <g class="carta-contra">
+              <circle cy="-140" r="7" />
+              <circle cy="-140" r="1.5" fill="currentColor" stroke="none" />
+            </g>
+          </g>
+          <circle r="16" />
+          <circle class="carta-orbita" r="30" stroke-dasharray="2 4" />
+          <g class="carta-aguja">
+            <path d="M0 -16V-30" />
+            <circle cy="-30" r="3" fill="currentColor" stroke="none" />
+          </g>
+        </g>
+      </svg>
+    </span>
+    <span class="carta-angulo" aria-hidden="true" data-angulo></span>
+    <ol>
+      {
+        links.map(({ href, label }, i) => (
+          <li>
+            <a href={href} aria-current={i === 0 ? "location" : undefined}>
+              <span class="carta-punto" aria-hidden="true" />
+              <span class="carta-texto">
+                <span class="carta-numero" aria-hidden="true">
+                  {String(i).padStart(2, "0")}
+                </span>
+                {label}
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</nav>
+
+<script>
+  import { startNav } from "../engine/nav";
+  startNav();
+</script>

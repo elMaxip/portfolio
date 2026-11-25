@@ -92,6 +92,14 @@
   font-variation-settings: "BLED" 10, "SCAN" 6;
 }
 
+@media (max-width: 759px) {
+  /* Deja libre la esquina del dial de navegación */
+  .titulo {
+    max-width: calc(100% - 60px);
+    box-sizing: border-box;
+  }
+}
+
 .escena {
   position: absolute;
   inset: 0;
