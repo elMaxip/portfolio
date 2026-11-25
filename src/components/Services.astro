@@ -1,0 +1,94 @@
+---
+import { getServices, getSite } from "../lib/content";
+import { formatPrice } from "../lib/format";
+import SectionTitle from "./SectionTitle.astro";
+const site = await getSite();
+const services = await getServices();
+---
+
+<section id="precios" aria-labelledby="titulo-precios">
+  <SectionTitle id="titulo-precios" text={site.services.title} class="titulo-precios" />
+  <div class="ventana">
+    {
+      services.map(({ data }) => (
+        <div class="precio">
+          <div class="fila t-fila">
+            <h3 class="t-servicio">{data.name}</h3>
+            <span class="guia" aria-hidden="true" />
+            <p class="monto">Desde {formatPrice(data.priceFrom)}</p>
+          </div>
+          <p class="detalle">{data.text}</p>
+        </div>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  section {
+    padding: 0 var(--margen) clamp(64px, 8vw, 120px);
+    scroll-margin-top: 24px;
+  }
+  .titulo-precios {
+    margin: 0 0 40px;
+  }
+  .ventana {
+    border: 2px solid var(--borde-fuerte);
+    background: var(--ventana);
+  }
+  .precio {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: clamp(22px, 2.6vw, 36px) clamp(16px, 2.6vw, 36px);
+    transition: background-color 200ms ease;
+  }
+  .precio + .precio {
+    border-top: 2px dashed var(--borde-tenue);
+  }
+  .precio:hover {
+    background: var(--ventana-activa);
+  }
+  .fila {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 14px;
+  }
+  h3 {
+    margin: 0;
+  }
+  .guia {
+    flex: 1 1 40px;
+    min-width: 0;
+    height: 1.3em;
+    overflow: hidden;
+    color: var(--borde);
+    font-family: var(--f-mono);
+    word-break: break-all;
+  }
+  .guia::before {
+    content: "............................................................................................................................................";
+  }
+  .monto {
+    margin: 0;
+    color: var(--texto-fuerte);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .detalle {
+    max-width: 62ch;
+    margin: 0;
+    color: var(--secundario-claro);
+    text-wrap: pretty;
+  }
+  @media (max-width: 759px) {
+    .guia {
+      display: none;
+    }
+    .monto {
+      flex-basis: 100%;
+    }
+  }
+</style>

@@ -1,0 +1,42 @@
+---
+import { getSite } from "../lib/content";
+const { footer } = await getSite();
+---
+
+<footer data-bloque="1">
+  <p>{footer.text}</p>
+  <div>
+    {footer.links.map((l) => <a class="nav" href={l.href}>{l.label}</a>)}
+  </div>
+</footer>
+
+<style>
+  footer {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 32px;
+    box-sizing: border-box;
+    min-height: 80px;
+    padding: 10px var(--margen);
+    border-top: 2px dashed var(--borde-tenue);
+    background: var(--fondo);
+    font-size: 1rem;
+  }
+  p {
+    margin: 0;
+  }
+  div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+    margin-inline: -10px;
+  }
+  @media (max-width: 759px) {
+    footer {
+      /* Espacio para el botón Apariencia */
+      padding-right: 84px;
+    }
+  }
+</style>

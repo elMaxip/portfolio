@@ -4,6 +4,7 @@ import "../styles/colors.css";
 import "../styles/base.css";
 import "../styles/type-minimal.css";
 import "../styles/type-retro.css";
+import "../styles/controls.css";
 
 interface Props {
   title: string;
@@ -26,9 +27,10 @@ const { title, description } = Astro.props;
     <script is:inline>
       // Aplica la apariencia guardada antes de pintar, para evitar parpadeo
       (function () {
+        var data = document.documentElement.dataset;
+        data.js = "";
         try {
           var saved = JSON.parse(localStorage.getItem("apariencia") || "{}");
-          var data = document.documentElement.dataset;
           if (saved.tipo === "retro") data.tipo = "retro";
           if (saved.planetas === "ascii") data.planetas = "ascii";
         } catch (e) {}
@@ -36,6 +38,9 @@ const { title, description } = Astro.props;
     </script>
   </head>
   <body>
-    <div id="inicio" class="tubo"><slot /></div>
+    <div id="inicio" class="tubo">
+      <a class="salto" href="#proyectos">Ir a los proyectos</a>
+      <slot />
+    </div>
   </body>
 </html>

@@ -1,0 +1,50 @@
+---
+import { getSite } from "../lib/content";
+import SectionTitle from "./SectionTitle.astro";
+const { about } = await getSite();
+---
+
+<section id="sobre-mi" aria-labelledby="titulo-sobre-mi">
+  <div class="retrato" aria-hidden="true"><canvas class="escena" data-escena="retrato"></canvas></div>
+  <div class="textos">
+    <SectionTitle id="titulo-sobre-mi" text={about.title} size="t-sub" />
+    <p class="destacado t-grande">{about.highlights.map((h) => <><span class="luz">{h}</span>{" "}</>)}</p>
+    <p class="detalle">{about.text}</p>
+  </div>
+</section>
+
+<style>
+  section {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 40px 72px;
+    padding: clamp(40px, 5vw, 72px) var(--margen);
+    scroll-margin-top: 24px;
+  }
+  .retrato {
+    position: relative;
+    flex: 1 1 340px;
+    min-width: 0;
+    max-width: 560px;
+    aspect-ratio: 1 / 1;
+  }
+  .textos {
+    flex: 2 1 520px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 32px;
+    min-width: 0;
+  }
+  .destacado {
+    margin: 0;
+    font-weight: 500;
+  }
+  .detalle {
+    max-width: 62ch;
+    margin: 0;
+    color: var(--secundario);
+    text-wrap: pretty;
+  }
+</style>

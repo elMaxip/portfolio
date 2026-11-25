@@ -1,0 +1,15 @@
+---
+interface Props {
+  text: string;
+  id: string;
+  size?: "t-titulo" | "t-sub";
+  class?: string;
+}
+// ...rest trae el identificador de estilos del componente padre
+const { text, id, size = "t-titulo", class: className, ...rest } = Astro.props;
+---
+
+<h2 id={id} class:list={["titulo", size, className]} aria-label={text} {...rest}>
+  <span aria-hidden="true">&gt;</span>{" "}
+  <span aria-hidden="true" data-decrypt="1">{text}</span>
+</h2>

@@ -1,0 +1,51 @@
+---
+import { getSite } from "../lib/content";
+import Footer from "./Footer.astro";
+const site = await getSite();
+---
+
+<div class="cierre">
+  <canvas class="escena" data-escena="horizonte" aria-hidden="true"></canvas>
+  <section aria-labelledby="titulo-cierre">
+    <h2 id="titulo-cierre" class="t-final" aria-label={site.closing.title} data-bloque="1">
+      <span aria-hidden="true" data-decrypt="1">{site.closing.title}</span>
+    </h2>
+    <p data-bloque="1">{site.closing.text}</p>
+    <a class="cta" data-bloque="1" href={site.whatsappHref}>{site.whatsapp.label}</a>
+  </section>
+  <Footer />
+</div>
+
+<style>
+  .cierre {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-sizing: border-box;
+    min-height: 820px;
+    overflow: hidden;
+    background: var(--fondo);
+  }
+  section {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 36px;
+    /* Los 340 px de abajo son para el horizonte */
+    padding: clamp(72px, 8vw, 120px) var(--margen) 340px;
+    text-align: center;
+  }
+  h2 {
+    margin: 0;
+    white-space: nowrap;
+  }
+  p {
+    max-width: 38ch;
+    margin: 0;
+    font-size: 1.25rem;
+    line-height: 1.5;
+    text-wrap: balance;
+  }
+</style>

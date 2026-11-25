@@ -1,0 +1,51 @@
+---
+import { getImage } from "astro:assets";
+import ProjectsIsland, { type Project } from "../islands/Projects";
+import { getProjects, getSite } from "../lib/content";
+import SectionTitle from "./SectionTitle.astro";
+import "../styles/projects.css";
+
+const site = await getSite();
+const entries = await getProjects();
+
+const projects: Project[] = await Promise.all(
+  entries.map(async ({ id, data }) => ({
+    id,
+    name: data.name,
+    summary: data.summary,
+    problem: data.problem,
+    solution: data.solution,
+    note: data.note,
+    link: data.link,
+    background: data.screenshotBackground,
+    screenshots: await Promise.all(
+      data.screenshots.map(async ({ label, alt, image }) => {
+        const img = await getImage({ src: image, width: 1280, widths: [480, 768, 1024, 1280, 1600, image.width], quality: 82 });
+        return { label, alt, src: img.src, srcSet: img.srcSet.attribute, width: image.width, height: image.height };
+      }),
+    ),
+  })),
+);
+---
+
+<section id="proyectos" aria-labelledby="titulo-proyectos">
+  <div class="cabecera">
+    <SectionTitle id="titulo-proyectos" text={site.projects.title} />
+    <!-- La frase "Elige un planeta…" (site.projects.hint) vuelve con la órbita, en la etapa 4 -->
+  </div>
+  <ProjectsIsland projects={projects} />
+</section>
+
+<style>
+  section {
+    position: relative;
+    padding: clamp(56px, 6vw, 96px) var(--margen);
+  }
+  .cabecera {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px 40px;
+  }
+</style>

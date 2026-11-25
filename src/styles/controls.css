@@ -1,0 +1,106 @@
+/* Enlaces, botones y ventanas que se repiten en varias secciones */
+:root {
+  --margen: clamp(20px, 4vw, 56px);
+}
+
+.salto {
+  position: absolute;
+  left: 16px;
+  top: -80px;
+  z-index: 9;
+  padding: 12px 20px;
+  background: var(--texto);
+  color: var(--fondo);
+}
+.salto:focus {
+  top: 16px;
+}
+
+.nav {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding-inline: 10px;
+  color: var(--texto);
+  text-decoration: none;
+  background: linear-gradient(var(--texto), var(--texto)) 0 50% / 0 34px no-repeat;
+  transition:
+    background-size 260ms cubic-bezier(0.16, 1, 0.3, 1),
+    color 160ms ease;
+}
+.nav:hover,
+.nav:focus-visible {
+  background-size: 100% 34px;
+  color: var(--fondo);
+}
+.nav.sub {
+  text-decoration: underline;
+  text-underline-offset: 6px;
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  min-height: 60px;
+  padding-inline: 28px;
+  background: var(--acento);
+  color: var(--sobre-acento);
+  font-weight: 700;
+  text-decoration: none;
+  transition:
+    background-color 160ms ease,
+    box-shadow 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.cta:hover {
+  transform: translate(-4px, -4px);
+  background: var(--acento-claro);
+  box-shadow: 8px 8px 0 var(--acento-sombra);
+}
+.cta:active {
+  transform: none;
+  box-shadow: none;
+}
+
+.tecla {
+  min-height: 46px;
+  padding: 0 18px;
+  border: 1px solid var(--borde);
+  background: transparent;
+  color: var(--texto);
+  font: inherit;
+  font-size: 1rem;
+  cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease;
+}
+.tecla:hover {
+  border-color: var(--texto);
+}
+
+/* Título de sección con resaltado claro */
+.titulo {
+  width: fit-content;
+  margin: 0;
+  padding: 0.16em 0.42em 0.2em;
+  background: var(--texto);
+  color: var(--fondo);
+}
+[data-tipo="retro"] .titulo {
+  padding: 0.14em 0.4em;
+  font-variation-settings: "BLED" 10, "SCAN" 6;
+}
+
+.escena {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Lo que no sirve sin JavaScript */
+html:not([data-js]) .solo-js {
+  display: none !important;
+}

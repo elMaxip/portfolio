@@ -1,0 +1,69 @@
+---
+import { getSite, getSteps } from "../lib/content";
+import { progressBar } from "../lib/format";
+import SectionTitle from "./SectionTitle.astro";
+const site = await getSite();
+const steps = await getSteps();
+---
+
+<section aria-labelledby="titulo-proceso">
+  <SectionTitle id="titulo-proceso" text={site.process.title} class="centrado" />
+  <ol role="list">
+    {
+      steps.map(({ id, data }) => (
+        <li>
+          <canvas data-escena={id} aria-hidden="true" />
+          <span class="barra" aria-hidden="true">
+            {progressBar(data.progress)}
+          </span>
+          <h3 class="t-paso">{data.title}</h3>
+          <p>{data.text}</p>
+        </li>
+      ))
+    }
+  </ol>
+</section>
+
+<style>
+  section {
+    padding: clamp(64px, 8vw, 120px) var(--margen);
+  }
+  .centrado {
+    margin: 0 auto 48px;
+  }
+  ol {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+    gap: 48px 40px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  li {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    text-align: center;
+  }
+  canvas {
+    display: block;
+    width: 100%;
+    height: 360px;
+  }
+  .barra {
+    color: var(--acento);
+    font-family: var(--f-mono);
+    font-size: 1.0625rem;
+    white-space: pre;
+  }
+  h3 {
+    margin: 0;
+  }
+  p {
+    max-width: 36ch;
+    margin: 0;
+    color: var(--secundario);
+    text-wrap: balance;
+  }
+</style>

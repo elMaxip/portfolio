@@ -1,0 +1,107 @@
+---
+import { getSite } from "../lib/content";
+import Header from "./Header.astro";
+const site = await getSite();
+
+// Cada letra del nombre entra por separado (etapa 3) y reacciona al cursor
+const words = [
+  { letters: [...site.firstName], start: 100 },
+  { letters: [...site.lastName], start: 420 },
+];
+---
+
+<div class="hero">
+  <canvas class="escena" data-escena="hero" aria-hidden="true"></canvas>
+  <Header />
+  <section class="portada" aria-labelledby="nombre">
+    <h1 id="nombre" class="t-portada" aria-label={site.name} translate="no">
+      {
+        words.map(({ letters, start }) => (
+          <span class="palabra" aria-hidden="true" data-bloque="2">
+            {letters.map((c, i) => (
+              <span class="letra" data-letra style={`--retraso: ${start + i * 70}ms`}>{c}</span>
+            ))}
+          </span>
+        ))
+      }
+    </h1>
+    <p class="t-lema" data-bloque="2">
+      <span class="oculto">{site.hero.tagline}</span>
+      <span aria-hidden="true"><span data-decrypt="1600">{site.hero.tagline}</span><span class="cursor"></span></span>
+    </p>
+    <div class="acciones">
+      <a class="cta" data-bloque="1" href={site.whatsappHref}>{site.whatsapp.label}</a>
+      <a class="nav explorar" data-bloque="1" href="#proyectos">{site.hero.explore}</a>
+    </div>
+  </section>
+</div>
+
+<style>
+  .hero {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    /* 940 px en el diseño; se ajusta a la pantalla para que WhatsApp quede a la vista */
+    min-height: clamp(680px, 100svh, 940px);
+    overflow: hidden;
+    background: var(--fondo);
+  }
+  .portada {
+    position: relative;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 36px;
+    padding: 24px var(--margen) 72px;
+  }
+  h1 {
+    margin: 0;
+  }
+  .palabra {
+    display: block;
+    width: fit-content;
+    white-space: nowrap;
+  }
+  .letra {
+    display: inline-block;
+  }
+  :global([data-tipo="retro"]) .letra {
+    font-variation-settings: "BLED" 0, "SCAN" 2;
+    text-shadow: 0 0 28px var(--acento-brillo);
+  }
+  .t-lema {
+    margin: 0;
+    font-weight: 500;
+  }
+  .cursor {
+    display: inline-block;
+    width: 0.58em;
+    height: 1.02em;
+    margin-inline-start: 0.16em;
+    vertical-align: -0.14em;
+    background: var(--acento);
+  }
+  .acciones {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px 24px;
+  }
+  .explorar {
+    min-height: 48px;
+    font-weight: 600;
+  }
+  @media (max-width: 759px) {
+    .hero {
+      min-height: clamp(760px, 100svh, 940px);
+    }
+    .portada {
+      justify-content: flex-end;
+      gap: 24px;
+      padding-bottom: 40px;
+    }
+  }
+</style>

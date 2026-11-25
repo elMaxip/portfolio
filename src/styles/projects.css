@@ -1,0 +1,102 @@
+/* Ventanas de proyecto (Projects.tsx) */
+.proyectos-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  margin-top: 40px;
+}
+.proyecto {
+  display: flex;
+  flex-direction: column;
+  border: 2px solid var(--borde-fuerte);
+  background: var(--ventana);
+  color: var(--texto);
+}
+.proyecto-barra {
+  padding: 8px;
+  border-bottom: 2px dashed var(--borde-fuerte);
+}
+.proyecto-barra h3 {
+  width: fit-content;
+  margin: 0;
+  padding: 4px 14px;
+  background: var(--texto);
+  color: var(--fondo);
+}
+.proyecto-cuerpo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px 48px;
+  padding: clamp(16px, 2.4vw, 32px);
+}
+.proyecto-visual {
+  flex: 999 1 600px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+.proyecto-textos {
+  flex: 1 1 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 28px;
+  min-width: 0;
+}
+.proyecto-textos > div {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.proyecto-textos h4 {
+  margin: 0;
+  color: var(--acento);
+  font-weight: 700;
+}
+.proyecto-textos p {
+  margin: 0;
+  text-wrap: pretty;
+}
+.proyecto-textos .resumen-ventana,
+.proyecto-textos .nota {
+  color: var(--secundario);
+}
+.proyecto-textos .nav {
+  align-self: flex-start;
+  margin-inline-start: -10px;
+  font-weight: 700;
+}
+
+/* Capturas: la primera grande y las otras dos debajo */
+.capturas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.captura {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  margin: 0;
+}
+.captura:first-child {
+  grid-column: 1 / -1;
+}
+.captura img {
+  position: relative;
+  z-index: 201;
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1906 / 906;
+  border: 1px solid var(--borde-tenue);
+  object-fit: cover;
+  object-position: top;
+}
+.captura figcaption {
+  color: var(--secundario);
+  font-size: 1rem;
+}
