@@ -19,12 +19,13 @@ for (const file of [...files("src"), path.join(root, "astro.config.mjs")]) {
 }
 
 const html = readFileSync(path.join(root, "dist", "index.html"), "utf8");
-if (/name="robots" content="noindex"/.test(html)) missing.push("dist: la página pide no aparecer en buscadores (falta el dominio)");
 if (/href="https:\/\/wa\.me\/"/.test(html)) missing.push("dist: el botón de WhatsApp no tiene número");
-if (!/property="og:image"/.test(html)) missing.push("dist: no hay imagen para la vista previa al compartir (falta el dominio)");
 
 if (missing.length) {
   console.error(`Aún no se puede publicar. Falta:\n\n- ${missing.join("\n- ")}\n`);
   process.exit(1);
 }
-console.log("Listo para publicar: sube la carpeta dist.");
+console.log("Listo para publicar.");
+if (/name="robots" content="noindex"/.test(html)) {
+  console.log("Esta copia no tiene dirección pública: en Vercel se toma sola; en otro hosting, define SITE_URL al generar.");
+}

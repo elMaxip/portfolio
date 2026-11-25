@@ -64,7 +64,6 @@
       -webkit-background-clip: text, text, border-box;
       background-clip: text, text, border-box;
       animation: barra linear both;
-      animation-timeline: view();
       animation-range: entry 10% cover 30%;
     }
     [data-tipo="retro"] .titulo {
@@ -72,8 +71,12 @@
     }
     .luz {
       animation: luz linear both;
-      animation-timeline: view();
       animation-range: entry 30% cover 42%;
+    }
+    /* En una regla aparte: al compactar el CSS, junto a `animation` queda inválida */
+    :is(.titulo, .luz) {
+      /* Sin el margen de scroll-padding, para que empiece al entrar en pantalla */
+      animation-timeline: view(block 0px);
     }
   }
 }

@@ -48,7 +48,8 @@ const projects = defineCollection({
       screenshotBackground: z.string(),
       screenshots: z
         .array(z.object({ label: z.string(), alt: z.string(), image: image() }))
-        .length(3),
+        .min(3)
+        .max(4),
     }),
 });
 
