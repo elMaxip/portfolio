@@ -11,7 +11,7 @@
     "check": "astro check",
     "build": "astro check && astro build",
     "preview": "astro preview",
-    "movil": "astro build && astro preview --host --port 4400"
+    "movil": "astro build && astro preview --host --port 4400 --force"
   },
   "dependencies": {
     "@astrojs/react": "^7.1.9",
