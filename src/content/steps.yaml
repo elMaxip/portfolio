@@ -1,0 +1,16 @@
+# PENDIENTE: confirmar estas promesas antes de publicar.
+- id: faseA
+  order: 1
+  title: Me cuentas
+  text: Conversamos por WhatsApp sobre tu negocio y lo que hoy te quita tiempo.
+  progress: 6
+- id: faseB
+  order: 2
+  title: Le doy forma
+  text: Recibes un plan con precio y fecha, y vas viendo los avances.
+  progress: 12
+- id: faseC
+  order: 3
+  title: Lo lanzamos
+  text: Queda funcionando en tu negocio y te enseño a usarlo.
+  progress: 18

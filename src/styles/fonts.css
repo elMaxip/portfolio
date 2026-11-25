@@ -1,0 +1,58 @@
+/* Autoalojadas desde Fontsource (OFL). Solo el conjunto latin: cubre todo el español. */
+@font-face {
+  font-family: "Unbounded";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 200 900;
+  src: url("@fontsource-variable/unbounded/files/unbounded-latin-wght-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Hanken Grotesk";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url("@fontsource-variable/hanken-grotesk/files/hanken-grotesk-latin-wght-normal.woff2") format("woff2");
+}
+/* "full" trae los dos ejes: BLED y SCAN */
+@font-face {
+  font-family: "Sixtyfour";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url("@fontsource-variable/sixtyfour/files/sixtyfour-latin-full-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "IBM Plex Mono";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url("@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-400-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "IBM Plex Mono";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 500;
+  src: url("@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-500-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "IBM Plex Mono";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 600;
+  src: url("@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-600-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "IBM Plex Mono";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src: url("@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-700-normal.woff2") format("woff2");
+}
+
+:root {
+  --f-titulo: Unbounded, system-ui, sans-serif;
+  --f-texto: "Hanken Grotesk", system-ui, sans-serif;
+  --f-pixel: Sixtyfour, "IBM Plex Mono", "Courier New", monospace;
+  --f-mono: "IBM Plex Mono", "Courier New", monospace;
+}

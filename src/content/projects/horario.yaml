@@ -1,0 +1,20 @@
+order: 3
+name: MiHorario
+summary: Horarios armados desde un Excel
+problem: Armar un horario era probar combinaciones a mano en una planilla de miles de filas.
+solution: Subes la planilla, eliges ramos y horas, y genera todos los horarios posibles sin topes.
+link:
+  label: Visitar MiHorario
+  href: https://mihorario.vercel.app/
+screenshotBackground: "#f8f9fc"
+# No usar visualizador.png: muestra nombres reales de docentes.
+screenshots:
+  - label: Subir archivo
+    alt: Inicio de MiHorario, donde se sube el archivo Excel
+    image: ../../assets/projects/mihorario/home.png
+  - label: Horas
+    alt: Selección de horas disponibles de lunes a sábado en MiHorario
+    image: ../../assets/projects/mihorario/seleccion-horas.png
+  - label: Asignaturas
+    alt: Lista de asignaturas con filtros en MiHorario
+    image: ../../assets/projects/mihorario/seleccion-asignaturas.png

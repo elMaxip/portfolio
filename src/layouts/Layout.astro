@@ -1,0 +1,41 @@
+---
+import "../styles/fonts.css";
+import "../styles/colors.css";
+import "../styles/base.css";
+import "../styles/type-minimal.css";
+import "../styles/type-retro.css";
+
+interface Props {
+  title: string;
+  description: string;
+}
+const { title, description } = Astro.props;
+---
+
+<!doctype html>
+<html lang="es-CL" data-tipo="mini" data-planetas="suave">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#08090b" />
+    <!-- PENDIENTE: quitar noindex al publicar -->
+    <meta name="robots" content="noindex" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <script is:inline>
+      // Aplica la apariencia guardada antes de pintar, para evitar parpadeo
+      (function () {
+        try {
+          var saved = JSON.parse(localStorage.getItem("apariencia") || "{}");
+          var data = document.documentElement.dataset;
+          if (saved.tipo === "retro") data.tipo = "retro";
+          if (saved.planetas === "ascii") data.planetas = "ascii";
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="inicio" class="tubo"><slot /></div>
+  </body>
+</html>

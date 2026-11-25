@@ -1,0 +1,40 @@
+main:
+  firstName: Máximo
+  lastName: Soto
+  description: Hago páginas web, sistemas y automatizaciones que mantienen tu negocio en órbita.
+  whatsapp:
+    # PENDIENTE: número real, solo dígitos y con código de país. Vacío enlaza a https://wa.me/
+    number: ""
+    label: Escríbeme por WhatsApp
+  hero:
+    tagline: Hago páginas web, sistemas y automatizaciones que mantienen tu negocio en órbita.
+    explore: Explorar proyectos
+  about:
+    title: Sobre mí
+    highlights:
+      - Programo para resolver
+      - "problemas que tengo cerca:"
+      - el almacén que anota el stock
+      - en un cuaderno,
+      - la planilla imposible,
+      - la tienda que necesita
+      - vender en línea.
+    # PENDIENTE: confirmar estas promesas y la mención a Duoc UC.
+    text: "Estudio Ingeniería en Informática en Duoc UC. Conmigo hablas directo, sin intermediarios: te escucho, te propongo algo que puedas pagar y te muestro avances mientras lo construyo."
+  projects:
+    title: Proyectos
+    hint: Elige un planeta para aterrizar en él.
+  process:
+    title: Así trabajo
+  services:
+    title: Servicios y precios
+  closing:
+    title: ¿Despegamos?
+    text: Cuéntame qué necesita tu negocio y te respondo con una propuesta.
+  footer:
+    text: Máximo Soto, Chile
+    links:
+      - label: GitHub
+        href: https://github.com/elMaxip
+      - label: LinkedIn
+        href: https://www.linkedin.com/in/maxisotogz/

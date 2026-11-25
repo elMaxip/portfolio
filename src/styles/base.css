@@ -1,0 +1,66 @@
+html {
+  color-scheme: dark;
+  scroll-behavior: smooth;
+}
+body {
+  margin: 0;
+  background: var(--fondo);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: rgba(200, 215, 230, 0.2);
+}
+::selection {
+  background: var(--texto);
+  color: var(--fondo);
+}
+a {
+  color: var(--texto);
+}
+a,
+button {
+  touch-action: manipulation;
+}
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 4px;
+}
+
+/* Contenedor de toda la página, con líneas de pantalla muy tenues */
+.tubo {
+  position: relative;
+  box-sizing: border-box;
+  min-height: 100vh;
+  overflow-x: clip;
+  background: var(--fondo);
+  color: var(--texto);
+}
+.tubo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 200;
+  pointer-events: none;
+  background: repeating-linear-gradient(rgba(0, 0, 0, var(--raya)) 0 1px, rgba(0, 0, 0, 0) 1px 3px);
+}
+
+.oculto {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}

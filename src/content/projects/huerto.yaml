@@ -1,0 +1,17 @@
+order: 2
+name: Huerto Hogar
+summary: Tienda de productos del campo
+problem: Una tienda de productos del campo necesitaba vender en línea con un catálogo fácil de editar.
+solution: Una tienda con catálogo, carrito y cuentas, más un panel para cambiar precios, stock y fotos.
+note: Proyecto académico.
+screenshotBackground: "#f4f4f4"
+screenshots:
+  - label: Catálogo
+    alt: Catálogo de Huerto Hogar con frutas, miel y verduras
+    image: ../../assets/projects/huertohogar/catalogo.png
+  - label: Carrito
+    alt: Carrito de compras de Huerto Hogar
+    image: ../../assets/projects/huertohogar/carrito.png
+  - label: Administración
+    alt: Panel para administrar los productos de Huerto Hogar
+    image: ../../assets/projects/huertohogar/admin-productos.png

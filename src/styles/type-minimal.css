@@ -1,0 +1,86 @@
+/* Letra minimalista (por defecto): Unbounded y Hanken Grotesk */
+.tubo {
+  font-family: var(--f-texto);
+  font-size: 1.1875rem;
+  line-height: 1.55;
+}
+.t-marca {
+  font-family: var(--f-titulo);
+  font-size: 1rem;
+  font-weight: 600;
+}
+.t-portada {
+  font-family: var(--f-titulo);
+  font-size: clamp(3.1rem, 10vw, 9.5rem);
+  line-height: 0.98;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+.t-lema {
+  max-width: 30ch;
+  font-size: clamp(1.25rem, 2vw, 1.625rem);
+  line-height: 1.4;
+  text-wrap: pretty;
+}
+.t-titulo,
+.t-sub {
+  font-family: var(--f-titulo);
+  font-size: clamp(1.875rem, 4vw, 3.375rem);
+  line-height: 1.15;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+.t-sub {
+  font-size: clamp(1.75rem, 2.8vw, 2.375rem);
+}
+.t-grande {
+  font-size: clamp(1.625rem, 3.2vw, 2.75rem);
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+}
+.t-planeta {
+  font-family: var(--f-titulo);
+  font-size: clamp(0.75rem, 1.8vw, 1.5rem);
+  line-height: 1.3;
+  font-weight: 500;
+}
+.t-ventana {
+  font-family: var(--f-titulo);
+  font-size: 1.25rem;
+  line-height: 1.3;
+  font-weight: 600;
+}
+.t-punto {
+  font-size: 1.1875rem;
+  line-height: 1.3;
+}
+.t-paso {
+  font-family: var(--f-titulo);
+  font-size: 1.5rem;
+  line-height: 1.2;
+  font-weight: 600;
+}
+.t-fila {
+  font-size: clamp(1.25rem, 2.2vw, 1.875rem);
+  line-height: 1.3;
+}
+.t-servicio {
+  font-family: var(--f-titulo);
+  font-size: inherit;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+.t-final {
+  font-family: var(--f-titulo);
+  font-size: clamp(2rem, 8vw, 7rem);
+  line-height: 1.05;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+/* Bajo 360 px "¿Despegamos?" no cabía en una línea */
+@media (max-width: 359px) {
+  .t-final {
+    font-size: 8.8vw;
+  }
+}

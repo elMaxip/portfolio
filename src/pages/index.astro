@@ -1,0 +1,179 @@
+---
+// Muestra provisoria de la etapa 1: se reemplaza por la página real en la etapa 2.
+import { Image } from "astro:assets";
+import { getCollection, getEntry } from "astro:content";
+import Layout from "../layouts/Layout.astro";
+import { formatPrice, progressBar, whatsappUrl } from "../lib/format";
+
+const entry = await getEntry("site", "main");
+if (!entry) throw new Error("Falta la entrada main en src/content/site.yaml");
+const site = entry.data;
+
+const byOrder = (a: { data: { order: number } }, b: { data: { order: number } }) =>
+  a.data.order - b.data.order;
+const projects = (await getCollection("projects")).sort(byOrder);
+const steps = (await getCollection("steps")).sort(byOrder);
+const services = (await getCollection("services")).sort(byOrder);
+
+const name = `${site.firstName} ${site.lastName}`;
+const colors = [
+  "fondo",
+  "ventana",
+  "texto",
+  "secundario",
+  "secundario-claro",
+  "borde-fuerte",
+  "borde",
+  "borde-tenue",
+  "acento",
+  "planeta-lumina",
+  "planeta-huerto",
+  "planeta-horario",
+];
+---
+
+<Layout title={name} description={site.description}>
+  <main class="muestra">
+    <p class="t-marca">&gt; {name}</p>
+    <h1 class="t-portada">{site.firstName}<br />{site.lastName}</h1>
+    <p class="t-lema">{site.hero.tagline}</p>
+    <p><a class="boton" href={whatsappUrl(site.whatsapp.number)}>{site.whatsapp.label}</a></p>
+
+    <ul class="colores">
+      {colors.map((c) => <li><span style={`background: var(--${c})`} />{c}</li>)}
+    </ul>
+
+    <h2 class="t-sub">&gt; {site.about.title}</h2>
+    <p class="t-grande">{site.about.highlights.join(" ")}</p>
+    <p class="gris">{site.about.text}</p>
+
+    <h2 class="t-titulo">&gt; {site.projects.title}</h2>
+    <p class="gris">{site.projects.hint}</p>
+    {
+      projects.map(({ data }) => (
+        <article>
+          <h3 class="t-ventana">&gt; {data.name}</h3>
+          <p class="gris t-resumen">{data.summary}</p>
+          <div class="capturas">
+            {data.screenshots.map((s) => (
+              <Image src={s.image} alt={s.alt} width={640} />
+            ))}
+          </div>
+          <h4 class="t-punto"># El problema</h4>
+          <p>{data.problem}</p>
+          <h4 class="t-punto"># Lo que construí</h4>
+          <p>{data.solution}</p>
+          {data.note && <p class="gris">{data.note}</p>}
+          {data.link && (
+            <p>
+              <a href={data.link.href}>{data.link.label}</a>
+            </p>
+          )}
+        </article>
+      ))
+    }
+
+    <h2 class="t-titulo">&gt; {site.process.title}</h2>
+    {
+      steps.map(({ data }) => (
+        <div>
+          <code>{progressBar(data.progress)}</code>
+          <h3 class="t-paso">{data.title}</h3>
+          <p class="gris">{data.text}</p>
+        </div>
+      ))
+    }
+
+    <h2 class="t-titulo">&gt; {site.services.title}</h2>
+    {
+      services.map(({ data }) => (
+        <div>
+          <p class="t-fila">
+            <span class="t-servicio">{data.name}</span> Desde {formatPrice(data.priceFrom)}
+          </p>
+          <p class="gris">{data.text}</p>
+        </div>
+      ))
+    }
+
+    <h2 class="t-final">{site.closing.title}</h2>
+    <p>{site.closing.text}</p>
+    <footer>
+      {site.footer.text}
+      {site.footer.links.map((l) => <a href={l.href}>{l.label}</a>)}
+    </footer>
+  </main>
+</Layout>
+
+<style>
+  .muestra {
+    padding: 20px clamp(20px, 4vw, 56px);
+  }
+  .gris {
+    color: var(--secundario);
+  }
+  .t-punto {
+    color: var(--acento);
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    margin-block: 1em 0.4em;
+  }
+  code {
+    color: var(--acento);
+    font-family: var(--f-mono);
+    font-size: 1.0625rem;
+  }
+  article {
+    margin-block: 24px;
+    padding: 16px;
+    border: 2px solid var(--borde-fuerte);
+    background: var(--ventana);
+  }
+  .boton {
+    display: inline-flex;
+    align-items: center;
+    min-height: 60px;
+    padding-inline: 28px;
+    background: var(--acento);
+    color: var(--sobre-acento);
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .capturas {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+    gap: 12px;
+  }
+  .capturas img {
+    position: relative;
+    z-index: 201;
+    width: 100%;
+    height: auto;
+  }
+  .colores {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 40px 0;
+    padding: 0;
+    list-style: none;
+    font-size: 1rem;
+  }
+  .colores span {
+    display: block;
+    width: 96px;
+    height: 48px;
+    border: 1px solid var(--borde);
+  }
+  footer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    margin-top: 40px;
+    padding-block: 24px;
+    border-top: 2px dashed var(--borde-tenue);
+  }
+</style>

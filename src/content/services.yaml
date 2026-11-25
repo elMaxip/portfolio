@@ -1,0 +1,16 @@
+# PENDIENTE: los precios son inventados y falta confirmar qué incluye cada servicio.
+- id: web
+  order: 1
+  name: Página web
+  priceFrom: 250000
+  text: Diseño propio, adaptada a celular, con tu ubicación, servicios y botón de WhatsApp.
+- id: sistema
+  order: 2
+  name: Sistema a medida
+  priceFrom: 600000
+  text: Inventario, ventas, reservas o clientes en un solo lugar, con usuarios y permisos.
+- id: automatizacion
+  order: 3
+  name: Automatización
+  priceFrom: 150000
+  text: Avisos, planillas y tareas repetidas que se hacen solas.

@@ -1,0 +1,81 @@
+/* Letra retro: Sixtyfour e IBM Plex Mono. Va después de type-minimal.css. */
+[data-tipo="retro"] .tubo {
+  font-family: var(--f-mono);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+}
+[data-tipo="retro"] :is(.t-marca, .t-planeta, .t-ventana, .t-paso, .t-servicio) {
+  font-family: var(--f-mono);
+  letter-spacing: 0;
+}
+[data-tipo="retro"] :is(.t-portada, .t-titulo, .t-sub, .t-final) {
+  font-family: var(--f-pixel);
+  font-weight: 400;
+  letter-spacing: 0;
+}
+[data-tipo="retro"] .t-marca {
+  font-size: 1.0625rem;
+  font-weight: 700;
+}
+[data-tipo="retro"] .t-portada {
+  font-size: clamp(3.1rem, 7.2vw, 8rem);
+  line-height: 1.12;
+}
+[data-tipo="retro"] .t-lema {
+  max-width: 36ch;
+  font-size: clamp(1.125rem, 1.6vw, 1.4375rem);
+  line-height: 1.5;
+}
+[data-tipo="retro"] .t-titulo {
+  font-size: clamp(1.375rem, 3.5vw, 3.125rem);
+  line-height: 1.25;
+}
+[data-tipo="retro"] .t-sub {
+  font-size: clamp(1.375rem, 2.6vw, 2.25rem);
+  line-height: 1.25;
+}
+[data-tipo="retro"] .t-grande {
+  font-size: clamp(1.3125rem, 2.35vw, 2.125rem);
+  line-height: 1.4;
+  letter-spacing: 0;
+}
+[data-tipo="retro"] .t-planeta {
+  font-size: clamp(0.8125rem, 1.7vw, 1.375rem);
+  font-weight: 600;
+}
+[data-tipo="retro"] .t-resumen {
+  font-size: 1rem;
+}
+[data-tipo="retro"] .t-ventana {
+  font-weight: 700;
+}
+[data-tipo="retro"] .t-punto {
+  font-size: 1.0625rem;
+  line-height: 1.4;
+}
+[data-tipo="retro"] .t-paso {
+  font-weight: 700;
+  line-height: 1.25;
+}
+[data-tipo="retro"] .t-fila {
+  font-size: clamp(1.25rem, 2vw, 1.75rem);
+}
+[data-tipo="retro"] .t-servicio {
+  font-weight: 600;
+}
+[data-tipo="retro"] .t-final {
+  font-size: clamp(1.5rem, 6.4vw, 6rem);
+  line-height: 1.1;
+  font-variation-settings: "BLED" 0, "SCAN" 2;
+  text-shadow: 0 0 28px var(--acento-brillo);
+}
+@media (max-width: 759px) {
+  [data-tipo="retro"] .t-portada {
+    font-size: min(13.6vw, 6rem);
+  }
+}
+@media (max-width: 359px) {
+  [data-tipo="retro"] .t-final {
+    font-size: 7.2vw;
+  }
+}

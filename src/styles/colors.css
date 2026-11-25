@@ -1,0 +1,32 @@
+:root {
+  --fondo: #08090b;
+  --ventana: #0b0e12;
+  --ventana-activa: #131920;
+
+  --texto: #dfeaf2;
+  --texto-fuerte: #eef6fb;
+  --secundario: #a9b4bf;
+  --secundario-claro: #b4bec8;
+
+  --borde-fuerte: #8b9bab;
+  --borde: #5c6b7a;
+  --borde-tenue: #39444f;
+
+  --acento: #8fd3ff;
+  --acento-claro: #c4e9ff;
+  --acento-sombra: rgba(143, 211, 255, 0.25);
+  --acento-brillo: rgba(143, 211, 255, 0.28);
+  --sobre-acento: #05121c;
+
+  /* Nombre del planeta elegido */
+  --planeta-lumina: #bcdcf0;
+  --planeta-huerto: #b9d3c4;
+  --planeta-horario: #dcc8a8;
+
+  /* Intensidad de las líneas de pantalla */
+  --raya: 0.06;
+}
+
+[data-planetas="ascii"] {
+  --raya: 0.13;
+}
