@@ -21,7 +21,8 @@ const projects: Project[] = await Promise.all(
     screenshots: await Promise.all(
       data.screenshots.map(async ({ label, alt, image }) => {
         const img = await getImage({ src: image, width: 1280, widths: [480, 768, 1024, 1280, 1600, image.width], quality: 82 });
-        return { label, alt, src: img.src, srcSet: img.srcSet.attribute, width: image.width, height: image.height };
+        const full = img.srcSet.values.find((v) => v.descriptor === `${image.width}w`)?.url ?? img.src;
+        return { label, alt, full, src: img.src, srcSet: img.srcSet.attribute, width: image.width, height: image.height };
       }),
     ),
   })),

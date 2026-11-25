@@ -1,0 +1,273 @@
+/* Pasar de una captura a otra (ShotNav.tsx) y captura ampliada (Lightbox.tsx) */
+.eje-capturas {
+  display: grid;
+  grid-template-columns: 48px auto 48px;
+  align-items: center;
+  justify-content: center;
+  gap: 2px 8px;
+}
+.eje-capturas button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--texto);
+  font: inherit;
+  cursor: pointer;
+}
+.eje-flecha {
+  height: 48px;
+}
+.eje-flecha span {
+  font-family: var(--f-mono);
+  font-size: 1.75rem;
+  line-height: 1;
+}
+.eje-flecha:hover {
+  color: var(--acento);
+}
+.eje-puntos {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  width: min(190px, 46vw);
+}
+/* Eje punteado con marcas de regla, entre el primer círculo y el último */
+.eje-puntos::before {
+  content: "";
+  position: absolute;
+  inset: 0 22px;
+  background:
+    repeating-linear-gradient(90deg, var(--borde) 0 2px, transparent 2px 6px) 0 50% / 100% 1px no-repeat,
+    repeating-linear-gradient(90deg, var(--borde-tenue) 0 1px, transparent 1px 12px) 0 50% / 100% 7px no-repeat;
+}
+.eje-puntos button {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 48px;
+}
+.eje-puntos span {
+  box-sizing: border-box;
+  width: 12px;
+  height: 12px;
+  border: 1.5px solid var(--secundario);
+  border-radius: 50%;
+  background: var(--ventana);
+  transition:
+    background-color 200ms ease,
+    box-shadow 200ms ease;
+}
+.eje-puntos [aria-pressed="true"] span {
+  border-color: var(--acento);
+  background: var(--acento);
+  box-shadow:
+    0 0 0 5px var(--ventana),
+    0 0 0 6px var(--borde-fuerte);
+}
+.eje-capturas p {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.4;
+  text-align: center;
+}
+.eje-numero {
+  color: var(--acento);
+  font-family: var(--f-mono);
+  font-size: 0.875rem;
+  font-weight: 400;
+}
+/* En la ventana: botones en computador, eje en celular */
+.proyecto .eje-capturas {
+  display: none;
+}
+@media (max-width: 759px) {
+  html[data-js] .capturas-botones {
+    display: none;
+  }
+  html[data-js] .proyecto .eje-capturas {
+    display: grid;
+  }
+}
+
+/* --- Botón para ampliar, sobre toda la captura --- */
+[data-js] .captura {
+  position: relative;
+}
+.capturas {
+  touch-action: pan-y pinch-zoom;
+}
+.ampliar {
+  position: absolute;
+  inset: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--texto);
+  cursor: zoom-in;
+  touch-action: inherit;
+}
+.ampliar span {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--borde-fuerte);
+  background: var(--fondo);
+  font: 400 1.375rem/1 var(--f-mono);
+  transition:
+    background-color 160ms ease,
+    color 160ms ease;
+}
+.ampliar:is(:hover, :focus-visible) span {
+  background: var(--texto);
+  color: var(--fondo);
+}
+.ampliar:focus-visible {
+  outline-offset: -4px;
+  outline-color: var(--fondo);
+  box-shadow: inset 0 0 0 4px var(--texto);
+}
+
+/* --- Captura ampliada --- */
+.visor {
+  box-sizing: border-box;
+  width: 100vw;
+  max-width: none;
+  height: 100dvh;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--texto);
+  overscroll-behavior: contain;
+}
+.visor[open] {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
+.visor::backdrop {
+  background: rgba(8, 9, 11, 0.94);
+}
+.visor-barra,
+.visor-controles {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 24px;
+  padding: 12px max(16px, env(safe-area-inset-right)) 12px max(16px, env(safe-area-inset-left));
+  background: var(--fondo);
+}
+.visor-controles {
+  padding-bottom: max(12px, env(safe-area-inset-bottom));
+}
+.visor-barra p {
+  margin: 0;
+}
+.visor .tecla {
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  font: 400 1.5rem/1 var(--f-mono);
+}
+.visor-escena {
+  container-type: size;
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  cursor: zoom-in;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.visor-escena[data-ampliada] {
+  cursor: grab;
+}
+.visor-escena[data-ampliada]:active {
+  cursor: grabbing;
+}
+.visor-escena img {
+  display: block;
+  width: min(100cqw, 100cqh * var(--proporcion));
+  height: auto;
+  aspect-ratio: var(--proporcion);
+}
+.visor-zoom {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.visor-zoom > span {
+  min-width: 4ch;
+  color: var(--secundario);
+  font-family: var(--f-mono);
+  font-size: 0.875rem;
+  text-align: center;
+}
+@media (min-width: 760px) {
+  .visor-escena {
+    margin-inline: 24px;
+  }
+  /* El eje al centro de la pantalla */
+  .visor-controles {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+  }
+  .visor-controles .eje-capturas {
+    grid-column: 2;
+  }
+  .visor-zoom {
+    justify-self: end;
+  }
+}
+@media (max-width: 759px) {
+  .visor-controles {
+    flex-direction: column;
+  }
+}
+/* Celular acostado: todo el alto para la imagen */
+@media (max-height: 480px) {
+  .visor[open] {
+    grid-template-rows: 1fr;
+  }
+  .visor-escena {
+    margin: 0;
+  }
+  .visor-barra,
+  .visor-controles {
+    position: absolute;
+    padding-block: 6px;
+    background: none;
+    pointer-events: none;
+  }
+  .visor-barra {
+    top: 0;
+    right: 0;
+  }
+  .visor-barra p,
+  .visor-controles .eje-capturas p {
+    display: none;
+  }
+  .visor-controles {
+    inset: auto 0 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  .visor .tecla,
+  .visor-zoom,
+  .visor-controles .eje-capturas {
+    background: var(--fondo);
+    pointer-events: auto;
+  }
+}

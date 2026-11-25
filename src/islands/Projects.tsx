@@ -1,9 +1,13 @@
+import { type MouseEvent, type TouchEvent, useEffect, useRef, useState } from "react";
+import Lightbox from "./Lightbox";
 import ProjectFigure from "./ProjectFigure";
-import { type MouseEvent, useEffect, useRef, useState } from "react";
+import ShotNav from "./ShotNav";
 
 export interface Screenshot {
   label: string;
   alt: string;
+  /** Tamaño completo: se descarga solo al ampliar. */
+  full: string;
   src: string;
   srcSet: string;
   width: number;
@@ -45,6 +49,40 @@ export default function Projects({ projects }: Props) {
   const [selected, setSelected] = useState(projects[0].id);
   const [shots, setShots] = useState<Record<string, number>>({});
   const [notice, setNotice] = useState("");
+
+  /** Captura ampliada. `preview` es la imagen ya cargada. */
+  const [zoomed, setZoomed] = useState<{ id: string; preview: string } | null>(null);
+
+  const show = (id: string, index: number) => setShots((all) => ({ ...all, [id]: index }));
+
+  // Deslizar la captura de lado pasa a otra
+  const swipe = useRef<{ x: number; y: number } | null>(null);
+  const onTouchStart = (e: TouchEvent) => {
+    const t = e.touches[0];
+    swipe.current = e.touches.length === 1 ? { x: t.clientX, y: t.clientY } : null;
+  };
+  const onTouchEnd = (e: TouchEvent, project: Project) => {
+    const from = swipe.current;
+    swipe.current = null;
+    if (!from || e.touches.length) return;
+    const t = e.changedTouches[0];
+    const dx = t.clientX - from.x;
+    if (Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(t.clientY - from.y) * 1.5) return;
+    const count = project.screenshots.length;
+    show(project.id, ((shots[project.id] ?? 0) + (dx < 0 ? 1 : -1) + count) % count);
+  };
+
+  const closeZoom = () => {
+    const id = zoomed?.id;
+    setZoomed(null);
+    // El foco vuelve a la captura que quedó a la vista
+    requestAnimationFrame(() => {
+      panel.current
+        ?.querySelector<HTMLElement>(`[data-proyecto="${id}"] [data-activa] .ampliar`)
+        ?.focus({ preventScroll: true });
+    });
+  };
+  const zoomedProject = projects.find((p) => p.id === zoomed?.id);
 
   const panel = useRef<HTMLDivElement>(null);
   const cancel = useRef(() => {});
@@ -122,6 +160,7 @@ export default function Projects({ projects }: Props) {
               aria-labelledby={`proyecto-${project.id}`}
               data-activo={project.id === selected || undefined}
               data-zona=""
+              data-proyecto={project.id}
             >
               <div className="proyecto-barra">
                 <h3 className="t-ventana" id={`proyecto-${project.id}`} translate="no">
@@ -134,7 +173,13 @@ export default function Projects({ projects }: Props) {
               </div>
               <div className="proyecto-cuerpo">
                 <div className="proyecto-visual">
-                  <div className="capturas" data-mira="" style={{ background: project.background }}>
+                  <div
+                    className="capturas"
+                    data-mira=""
+                    style={{ background: project.background }}
+                    onTouchStart={onTouchStart}
+                    onTouchEnd={(e) => onTouchEnd(e, project)}
+                  >
                     {project.screenshots.map((s, i) => (
                       <figure className="captura" key={s.label} data-activa={i === shot || undefined}>
                         <img
@@ -147,6 +192,17 @@ export default function Projects({ projects }: Props) {
                           loading="lazy"
                           decoding="async"
                         />
+                        <button
+                          className="ampliar solo-js"
+                          type="button"
+                          aria-label={`Ampliar: ${s.label}`}
+                          aria-haspopup="dialog"
+                          onClick={(e) =>
+                            setZoomed({ id: project.id, preview: e.currentTarget.parentElement?.querySelector("img")?.currentSrc ?? s.src })
+                          }
+                        >
+                          <span aria-hidden="true">+</span>
+                        </button>
                         <figcaption>{s.label}</figcaption>
                       </figure>
                     ))}
@@ -159,12 +215,19 @@ export default function Projects({ projects }: Props) {
                         className="tecla"
                         type="button"
                         aria-pressed={i === shot}
-                        onClick={() => setShots((all) => ({ ...all, [project.id]: i }))}
+                        onClick={() => show(project.id, i)}
                       >
                         {s.label}
                       </button>
                     ))}
                   </div>
+                  <ShotNav
+                    className="solo-js"
+                    labels={project.screenshots.map((s) => s.label)}
+                    index={shot}
+                    onChange={(i) => show(project.id, i)}
+                    name={project.name}
+                  />
                 </div>
                 <div className="proyecto-textos">
                   <p className="sin-js t-resumen">{project.summary}</p>
@@ -193,6 +256,16 @@ export default function Projects({ projects }: Props) {
           );
         })}
       </div>
+
+      {zoomed && zoomedProject && (
+        <Lightbox
+          project={zoomedProject}
+          index={shots[zoomedProject.id] ?? 0}
+          preview={zoomed.preview}
+          onChange={(i) => show(zoomedProject.id, i)}
+          onClose={closeZoom}
+        />
+      )}
     </>
   );
 }
