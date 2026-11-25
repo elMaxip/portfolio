@@ -36,9 +36,13 @@ const { footer } = await getSite();
     gap: 4px 12px;
     margin-inline: -10px;
   }
+  /* Cada enlace trae 10 px de relleno a cada lado: entre textos queda lo mismo que el espacio del pie */
   @media (max-width: 759px) {
     footer {
-      column-gap: 12px;
+      column-gap: 20px;
+    }
+    div {
+      column-gap: 0;
     }
   }
 </style>
