@@ -181,7 +181,8 @@ export function startEngine(): Engine {
     pending.shift()?.painter.prepare();
     if (pending.length) idle(next);
   };
-  idle(next);
+  // Después de que se forma el planeta de portada, que es lo más pesado
+  setTimeout(() => idle(next), 3500);
 
   return engine;
 }
