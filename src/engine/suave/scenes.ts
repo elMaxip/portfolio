@@ -2,7 +2,7 @@ import { AIM_X, AIM_Y, CORNERS } from "../orbit";
 import { drawColony, prepareColony } from "../colony";
 import { lazy, makeStars, noise, norm, points, rng } from "../math";
 import { rockPoints } from "../rock";
-import { AMBER, BLUE, GREEN, ICE, MOON, type Env, type Painter, type SceneKey, type Style, type View } from "../types";
+import { AMBER, BLUE, FAST, GREEN, ICE, MOON, SLOW, type Env, type Painter, type SceneKey, type Style, type View } from "../types";
 import { forgetSheets, GLYPHS, level, SoftCanvas } from "./SoftCanvas";
 import { globe, hoops } from "./shapes";
 
@@ -13,11 +13,6 @@ interface Scene {
   prepare: () => void;
   draw: (c: SoftCanvas, view: View) => void;
 }
-
-/** Unos 30 cuadros por segundo. */
-const SLOW = 1 / 31;
-/** Unos 60. Deja margen para pantallas de 120 o 144 Hz. */
-const FAST = 1 / 75;
 
 const HERO_LIGHT = norm([0.62, -0.5, 0.6]);
 const SIDE_LIGHT = norm([-0.5, -0.5, 0.7]);

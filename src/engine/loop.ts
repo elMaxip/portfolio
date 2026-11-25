@@ -1,6 +1,6 @@
 import { Orbit } from "./orbit";
-import { createSoft } from "./suave/scenes";
-import type { Env, Painter, SceneKey, Style, View } from "./types";
+import { chosenStyle, loadStyle, type CreateStyle } from "./styles";
+import type { Env, Painter, SceneKey, Style, StyleName, View } from "./types";
 
 export interface EngineScene extends View {
   painter: Painter;
@@ -22,8 +22,9 @@ export interface Engine {
 
 const SMALL = matchMedia("(max-width: 759px)");
 const REDUCED = matchMedia("(prefers-reduced-motion: reduce)");
+
 /** Un solo requestAnimationFrame para todas las escenas. Se duerme si no hay nada que dibujar. */
-export function startEngine(): Engine {
+export function startEngine(name: StyleName, create: CreateStyle): Engine {
   const html = document.documentElement;
   const env: Env = {
     reduce: REDUCED.matches,
@@ -33,7 +34,16 @@ export function startEngine(): Engine {
     orbit: new Orbit(),
   };
 
-  let style: Style = createSoft(env);
+  // Los estilos ya usados se guardan con sus cálculos, para volver a ellos al instante
+  const makers = new Map<StyleName, CreateStyle>([[name, create]]);
+  const styles = new Map<StyleName, Style>();
+  const styleFor = (name: StyleName): Style => {
+    const made = styles.get(name) ?? makers.get(name)!(env);
+    styles.set(name, made);
+    return made;
+  };
+  let current = name;
+  let style = styleFor(name);
   const scenes: EngineScene[] = [];
   const byCanvas = new Map<Element, EngineScene>();
   for (const el of document.querySelectorAll<HTMLCanvasElement>("canvas[data-escena]")) {
@@ -139,14 +149,60 @@ export function startEngine(): Engine {
   for (const sc of scenes) {
     seen.observe(sc.el);
     sized.observe(sc.el);
+    // Si el navegador descarta el lienzo, vuelve vacío
+    sc.el.addEventListener("contextrestored", () => {
+      if (sc.fitted) fit(sc);
+      wake();
+    });
+  }
+
+  /** Cambia el dibujo de los planetas sin recargar. El de portada se vuelve a formar. */
+  async function restyle(): Promise<void> {
+    const want = chosenStyle();
+    if (want === current) return;
+    if (!makers.has(want)) {
+      const create = await loadStyle(want).catch(() => null);
+      if (create) makers.set(want, create);
+    }
+    // Mientras cargaba se pudo elegir otro
+    if (chosenStyle() !== want || want === current) return;
+    if (!makers.has(want)) {
+      // No se pudo descargar: se queda el que había
+      html.dataset.planetas = current;
+      return;
+    }
+    current = want;
+    repaint();
+    const hero = scenes.find((sc) => sc.key === "hero");
+    if (hero) hero.t0 = isStill() ? -9 : Math.max(0.001, hero.t);
+    prepareAhead(scenes.map((sc) => sc.painter), 1600);
+  }
+  function repaint(): void {
+    style = styleFor(current);
+    for (const sc of scenes) {
+      sc.painter = style.create(sc);
+      // Cada una se ajusta cuando se ve
+      sc.fitted = false;
+    }
+    wake();
   }
 
   // La interfaz avisa con atributos en <html>
   new MutationObserver((changes) => {
     env.paused = html.hasAttribute("data-paused");
-    if (changes.some((c) => c.attributeName === "data-tipo")) measureText();
+    const changed = (attribute: string) => changes.some((c) => c.attributeName === attribute);
+    if (changed("data-tipo")) measureText();
+    if (changed("data-planetas")) void restyle();
     wake();
-  }).observe(html, { attributes: true, attributeFilter: ["data-paused", "data-tipo"] });
+  }).observe(html, { attributeFilter: ["data-paused", "data-tipo", "data-planetas"] });
+
+  // Al abrir el panel Apariencia se adelantan la descarga y los cálculos del otro estilo
+  document.addEventListener("apariencia:abierta", async () => {
+    const create = await loadStyle("ascii").catch(() => null);
+    if (!create) return;
+    makers.set("ascii", create);
+    if (current !== "ascii") prepareAhead(scenes.map((sc) => styleFor("ascii").create(sc)), 0);
+  });
 
   REDUCED.addEventListener("change", () => {
     env.reduce = REDUCED.matches;
@@ -155,15 +211,18 @@ export function startEngine(): Engine {
   });
   SMALL.addEventListener("change", () => {
     env.phone = SMALL.matches;
-    style = createSoft(env);
-    for (const sc of scenes) sc.painter = style.create(sc);
-    refit();
+    styles.clear();
+    repaint();
   });
 
-  // Al cargar una tipografía cambian los caracteres y las zonas de texto
-  document.fonts.addEventListener("loadingdone", () => {
-    style.forgetGlyphs();
-    refit();
+  // Al cargar una tipografía cambian las zonas de texto y, si es la de los planetas, sus caracteres
+  document.fonts.addEventListener("loadingdone", (e) => {
+    if (e.fontfaces.some((f) => f.family.includes("IBM Plex Mono") && /^[56]00$/.test(f.weight))) {
+      for (const made of styles.values()) made.forgetGlyphs();
+      refit();
+    } else {
+      measureText();
+    }
   });
 
   const hero = scenes.find((sc) => sc.key === "hero");
@@ -194,19 +253,15 @@ export function startEngine(): Engine {
   // Adelanta los cálculos de las escenas de más abajo, de a una, cuando el equipo está libre
   const idle = (fn: () => void) =>
     "requestIdleCallback" in window ? requestIdleCallback(fn, { timeout: 3000 }) : setTimeout(fn, 300);
-  const pending = [...scenes];
-  const next = () => {
-    pending.shift()?.painter.prepare();
-    if (pending.length) idle(next);
-  };
+  function prepareAhead(painters: Painter[], wait: number): void {
+    const next = () => {
+      painters.shift()?.prepare();
+      if (painters.length) idle(next);
+    };
+    setTimeout(() => idle(next), wait);
+  }
   // Después de que se forma el planeta de portada, que es lo más pesado
-  setTimeout(() => idle(next), 3500);
+  prepareAhead(scenes.map((sc) => sc.painter), 3500);
 
   return engine;
-}
-
-/** Los planetas se dibujan con IBM Plex Mono: la espera un momento, pero no se bloquea por ella. */
-export async function glyphFontReady(): Promise<void> {
-  const font = document.fonts.load('500 12px "IBM Plex Mono"').catch(() => {});
-  await Promise.race([font, new Promise((ok) => setTimeout(ok, 1500))]);
 }

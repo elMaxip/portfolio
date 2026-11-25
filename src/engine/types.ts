@@ -39,11 +39,18 @@ export interface Painter {
   paint(): void;
 }
 
+export type StyleName = "suave" | "ascii";
+
 export interface Style {
   create(view: View): Painter;
   /** Olvida los caracteres dibujados con una tipografía que aún no había cargado. */
   forgetGlyphs(): void;
 }
+
+/** Segundos entre cuadros: unos 30 por segundo. */
+export const SLOW = 1 / 31;
+/** Unos 60. Deja margen para pantallas de 120 o 144 Hz. */
+export const FAST = 1 / 75;
 
 /** Índices de las paletas, iguales en los dos estilos. */
 export const ICE = 0;

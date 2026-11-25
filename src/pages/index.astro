@@ -5,8 +5,10 @@ import Hero from "../components/Hero.astro";
 import Process from "../components/Process.astro";
 import Projects from "../components/Projects.astro";
 import Services from "../components/Services.astro";
+import Appearance from "../islands/Appearance";
 import Layout from "../layouts/Layout.astro";
 import { getSite } from "../lib/content";
+import "../styles/appearance.css";
 
 const site = await getSite();
 ---
@@ -20,6 +22,7 @@ const site = await getSite();
     <Services />
   </main>
   <Closing />
+  <Appearance client:idle={{ timeout: 1500 }} />
 </Layout>
 
 <script>

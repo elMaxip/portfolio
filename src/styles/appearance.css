@@ -1,0 +1,136 @@
+/* Botón y panel Apariencia (Appearance.tsx) */
+.ajustes {
+  position: fixed;
+  right: max(16px, env(safe-area-inset-right));
+  bottom: max(16px, env(safe-area-inset-bottom));
+  z-index: 300;
+  display: flex;
+  /* El panel se ve arriba, pero va después del botón para el teclado */
+  flex-direction: column-reverse;
+  align-items: flex-end;
+  gap: 10px;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+.ajustes-boton {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 18px;
+  border: 1px solid var(--borde-fuerte);
+  background: var(--fondo);
+  color: var(--texto);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    color 160ms ease;
+}
+.ajustes-boton:hover,
+.ajustes-boton[aria-expanded="true"] {
+  background: var(--texto);
+  color: var(--fondo);
+}
+.ajustes-icono {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: radial-gradient(currentColor 34%, transparent 40%) 0 0/4px 4px;
+  box-shadow: 0 0 0 1.5px currentColor;
+}
+.ajustes-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  box-sizing: border-box;
+  width: min(340px, calc(100vw - 32px));
+  /* En pantallas muy bajas se desplaza por dentro */
+  max-height: calc(100dvh - 90px);
+  overflow-y: auto;
+  padding: 18px;
+  border: 2px solid var(--borde-fuerte);
+  background: var(--ventana);
+  animation: abrePanel 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.ajustes-panel[hidden] {
+  display: none;
+}
+@keyframes abrePanel {
+  from {
+    clip-path: inset(100% 0 0 0);
+  }
+  to {
+    clip-path: inset(0);
+  }
+}
+.ajustes-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.ajustes-grupo > span {
+  color: var(--secundario);
+}
+.ajustes-grupo > div {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.opcion {
+  min-height: 52px;
+  padding: 0 10px;
+  border: 1px solid var(--borde);
+  background: transparent;
+  color: var(--texto);
+  font: inherit;
+  font-size: 0.9375rem;
+  cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease;
+}
+.opcion:hover {
+  border-color: var(--texto);
+}
+.opcion[aria-pressed="true"] {
+  border-color: var(--texto);
+  background: var(--texto);
+  color: var(--fondo);
+}
+/* Cada opción se muestra con su propia letra */
+.o-mini {
+  font-family: var(--f-titulo);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+.o-retro {
+  font-family: var(--f-pixel);
+  font-size: 1rem;
+}
+.o-texto {
+  font-family: var(--f-texto);
+  font-size: 1.0625rem;
+  font-weight: 600;
+}
+.o-ascii {
+  font-family: var(--f-mono);
+  font-size: 1.0625rem;
+  font-weight: 700;
+}
+@media (max-width: 759px) {
+  .ajustes-boton {
+    justify-content: center;
+    width: 48px;
+    padding: 0;
+  }
+  .ajustes-texto {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+}
