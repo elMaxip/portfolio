@@ -7,13 +7,21 @@ export function startNav(): void {
   const links = [...nav.querySelectorAll<HTMLAnchorElement>("a")];
   const sections = links.map((a) => document.querySelector<HTMLElement>(a.hash));
 
-  let tops: number[] = [];
+  /** Hasta dónde se desplaza la página al elegir cada sección. */
+  let stops: number[] = [];
+  /** La sección que se eligió, por si dos terminan en el mismo lugar. */
+  let wanted = -1;
   let active = 0;
   let raf = 0;
   let hush = 0;
 
   function measure(): void {
-    tops = sections.map((el) => (el ? el.getBoundingClientRect().top + scrollY : 0));
+    const max = document.documentElement.scrollHeight - innerHeight;
+    stops = sections.map((el) => {
+      if (!el) return 0;
+      const top = el.getBoundingClientRect().top + scrollY - parseFloat(getComputedStyle(el).scrollMarginTop);
+      return Math.min(max, Math.max(0, top));
+    });
     request();
   }
 
@@ -21,17 +29,20 @@ export function startNav(): void {
     raf = 0;
     const max = Math.max(1, document.documentElement.scrollHeight - innerHeight);
     const progress = Math.min(1, Math.max(0, scrollY / max));
-    // Una sección manda desde que llega al 40 % de la pantalla (al principio de la página, menos)
-    const line = scrollY + innerHeight * 0.4 * Math.min(1, scrollY / (innerHeight * 0.5));
-    let i = 0;
-    while (i + 1 < tops.length && tops[i + 1] <= line) i++;
-    let position = i;
-    if (i + 1 < tops.length) position += Math.max(0, (line - tops[i]) / (tops[i + 1] - tops[i]));
-    if (progress > 0.995) position = i = tops.length - 1;
+    // Al llegar a una sección, la circunferencia queda justo sobre su círculo
+    let last = stops.length - 1;
+    while (last > 0 && stops[last] > scrollY + 2) last--;
+    let position = last;
+    const gap = (stops[last + 1] ?? 0) - stops[last];
+    if (gap > 0) position += Math.max(0, scrollY - stops[last]) / gap;
+    if (Math.abs(scrollY - stops[last]) < 2) position = last;
+    if (wanted >= 0 && Math.abs(scrollY - stops[wanted]) < 2) position = wanted;
+    // La siguiente sección manda un poco antes de llegar arriba
+    const i = Math.min(stops.length - 1, Math.floor(position + 0.35));
 
     const theta = progress * 360;
     nav!.style.setProperty("--giro", `${theta.toFixed(1)}deg`);
-    nav!.style.setProperty("--lugar", Math.min(tops.length - 1, position).toFixed(3));
+    nav!.style.setProperty("--lugar", position.toFixed(3));
     angle!.textContent = `θ ${theta.toFixed(0).padStart(3, "0")}°`;
     nav!.toggleAttribute("data-arriba", scrollY < innerHeight * 0.35);
     if (i === active) return;
@@ -53,7 +64,13 @@ export function startNav(): void {
     button!.setAttribute("aria-expanded", String(value));
   }
   button.addEventListener("click", () => open(!isOpen()));
-  for (const a of links) a.addEventListener("click", () => open(false));
+  links.forEach((a, i) =>
+    a.addEventListener("click", () => {
+      wanted = i;
+      open(false);
+    }),
+  );
+  for (const n of ["wheel", "touchmove", "keydown"] as const) addEventListener(n, () => (wanted = -1), { passive: true });
   document.addEventListener("keydown", (e) => {
     if (e.key !== "Escape" || !isOpen()) return;
     open(false);
