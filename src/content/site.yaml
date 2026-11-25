@@ -2,13 +2,13 @@ main:
   firstName: Máximo
   lastName: Soto
   title: "Máximo Soto: páginas web, sistemas y automatizaciones en Chile"
-  description: Hago páginas web, sistemas y automatizaciones que mantienen tu negocio en órbita.
+  description: Hago páginas web, sistemas y automatizaciones para negocios que quieren dejar el cuaderno y la planilla.
   whatsapp:
     # Solo dígitos y con código de país.
     number: "56971675473"
     label: Escríbeme por WhatsApp
   hero:
-    tagline: Hago páginas web, sistemas y automatizaciones que mantienen tu negocio en órbita.
+    tagline: Hago páginas web, sistemas y automatizaciones para negocios que quieren dejar el cuaderno y la planilla.
     explore: Explorar proyectos
   about:
     title: Sobre mí
@@ -28,6 +28,7 @@ main:
     title: Así trabajo
   services:
     title: Servicios y precios
+    quote: Cotizar por WhatsApp
     note: "Son precios de referencia: el valor final depende de lo que necesites. Si tienes otro presupuesto, cuéntame y ajustamos el proyecto para que te alcance."
   closing:
     title: ¿Despegamos?

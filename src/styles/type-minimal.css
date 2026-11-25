@@ -20,7 +20,7 @@
   max-width: 30ch;
   font-size: clamp(1.25rem, 2vw, 1.625rem);
   line-height: 1.4;
-  text-wrap: pretty;
+  text-wrap: balance;
 }
 .t-titulo,
 .t-sub {

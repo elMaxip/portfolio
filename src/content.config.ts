@@ -27,7 +27,7 @@ const site = defineCollection({
     }),
     projects: z.object({ title: z.string(), hint: z.string() }),
     process: z.object({ title: z.string() }),
-    services: z.object({ title: z.string(), note: z.string() }),
+    services: z.object({ title: z.string(), quote: z.string(), note: z.string() }),
     closing: z.object({ title: z.string(), text: z.string() }),
     footer: z.object({ text: z.string(), links: z.array(link) }),
   }),
@@ -70,6 +70,8 @@ const services = defineCollection({
     order: z.number().int(),
     name: z.string(),
     text: z.string(),
+    // Mensaje de WhatsApp ya escrito; la persona lo puede editar.
+    message: z.string(),
     // Pesos chilenos.
     priceFrom: z.number().int().positive(),
   }),

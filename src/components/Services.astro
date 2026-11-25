@@ -1,6 +1,6 @@
 ---
 import { getServices, getSite } from "../lib/content";
-import { formatPrice } from "../lib/format";
+import { formatPrice, whatsappUrl } from "../lib/format";
 import SectionTitle from "./SectionTitle.astro";
 const site = await getSite();
 const services = await getServices();
@@ -19,6 +19,10 @@ const services = await getServices();
             <p class="monto">Desde {formatPrice(data.priceFrom)}</p>
           </div>
           <p class="detalle">{data.text}</p>
+          <a class="nav sub" href={whatsappUrl(site.whatsapp.number, data.message)}>
+            {site.services.quote}
+            <span class="oculto">: {data.name}</span>
+          </a>
         </div>
       ))
     }
@@ -89,6 +93,10 @@ const services = await getServices();
     margin: 0;
     color: var(--secundario-claro);
     text-wrap: pretty;
+  }
+  .precio .nav {
+    align-self: flex-start;
+    margin-inline-start: -10px;
   }
   @media (max-width: 759px) {
     .guia {

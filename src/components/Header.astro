@@ -5,7 +5,9 @@ const site = await getSite();
 
 <header data-bloque="1">
   <a class="nav t-marca" href="#inicio" translate="no"><span aria-hidden="true">&gt;&nbsp;</span>{site.name}</a>
-  <button class="tecla solo-js" type="button" data-pausar>Pausar</button>
+  <button class="tecla solo-js" type="button" data-pausar
+    ><span data-accion>Pausar</span> <span class="resto">animación</span></button
+  >
 </header>
 
 <style>
@@ -41,10 +43,25 @@ const site = await getSite();
       padding: 0 12px;
       font-size: 0.9375rem;
     }
+    /* No cabe: queda solo para los lectores de pantalla */
+    .resto {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+    }
   }
-  @media (max-width: 359px) {
+  @media (max-width: 389px) {
+    /* "Reanudar" sigue junto a la marca */
     header {
       gap: 4px 12px;
+    }
+  }
+  @media (max-width: 359px) {
+    .tecla {
+      padding: 0 8px;
+      font-size: 0.875rem;
     }
     header .t-marca {
       padding-inline: 4px;
@@ -57,8 +74,9 @@ const site = await getSite();
 <script>
   // El motor observa data-paused en <html>
   const button = document.querySelector<HTMLButtonElement>("[data-pausar]");
+  const action = button?.querySelector("[data-accion]");
   button?.addEventListener("click", () => {
     const paused = document.documentElement.toggleAttribute("data-paused");
-    button.textContent = paused ? "Reanudar" : "Pausar";
+    if (action) action.textContent = paused ? "Reanudar" : "Pausar";
   });
 </script>

@@ -3,13 +3,16 @@
   name: Página web
   priceFrom: 200000
   text: Diseño propio, adaptada a celular, con tu ubicación, servicios y botón de WhatsApp.
+  message: Hola Máximo, quiero cotizar una página web.
 - id: sistema
   order: 2
   name: Sistema a medida
   priceFrom: 500000
   text: Inventario, ventas, reservas o clientes en un solo lugar, con usuarios y permisos.
+  message: Hola Máximo, quiero cotizar un sistema a medida.
 - id: automatizacion
   order: 3
   name: Automatización
   priceFrom: 120000
   text: Avisos, planillas y tareas repetidas que se hacen solas.
+  message: Hola Máximo, quiero cotizar una automatización.
