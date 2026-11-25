@@ -96,6 +96,12 @@
 .proyectos-lista {
   scroll-margin-top: 16px;
 }
+@media (max-width: 1099px) {
+  .proyectos-lista {
+    /* Bajo el dial de navegación */
+    scroll-margin-top: 74px;
+  }
+}
 .proyecto-barra {
   display: flex;
   flex-wrap: wrap;

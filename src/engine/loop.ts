@@ -16,6 +16,8 @@ export interface Engine {
   readonly scenes: readonly EngineScene[];
   readonly env: Env;
   wake(): void;
+  /** Lo que acompaña a una escena: se llama después de dibujarla. */
+  readonly after: Map<SceneKey, (view: View) => void>;
   onPaint?: (key: SceneKey, ms: number) => void;
   onFrame?: () => void;
 }
@@ -61,7 +63,7 @@ export function startEngine(name: StyleName, create: CreateStyle): Engine {
     byCanvas.set(el, scene);
   }
 
-  const engine: Engine = { scenes, env, wake };
+  const engine: Engine = { scenes, env, wake, after: new Map() };
   const isStill = () => env.paused || env.reduce;
 
   function fit(sc: EngineScene): void {
@@ -122,6 +124,7 @@ export function startEngine(name: StyleName, create: CreateStyle): Engine {
       sc.dirty = false;
       const start = engine.onPaint ? performance.now() : 0;
       sc.painter.paint();
+      engine.after.get(sc.key)?.(sc);
       engine.onPaint?.(sc.key, performance.now() - start);
     }
     engine.onFrame?.();

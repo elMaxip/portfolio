@@ -1,3 +1,5 @@
+import { OrbitPlate } from "./orbitplate";
+
 /** Planetas en orden de giro. Son los id de los proyectos en src/content/projects. */
 export const PLANETS = ["lumina", "huerto", "horario"] as const;
 export type PlanetId = (typeof PLANETS)[number];
@@ -60,7 +62,11 @@ export class Orbit {
   /** Avisa que hay que volver a dibujar aunque la página esté en pausa. */
   onChange: () => void = () => {};
 
+  /** Se está moviendo con el cursor o el dedo. */
+  dragging = false;
+
   private stage: HTMLElement | null = null;
+  private plate: OrbitPlate | null = null;
   private buttons = new Map<PlanetId, PlanetButton>();
   private stageWidth = 0;
   private box = 400;
@@ -71,6 +77,7 @@ export class Orbit {
   /** Escucha el escenario: los botones los maneja Projects.tsx. */
   listen(stage: HTMLElement, instant: () => boolean): void {
     this.stage = stage;
+    this.plate = new OrbitPlate(stage);
     const canHover = matchMedia("(hover: hover)");
     const planetOf = (e: Event) => {
       const id = (e.target as Element).closest<HTMLElement>("[data-planeta]")?.dataset.planeta;
@@ -92,6 +99,7 @@ export class Orbit {
     });
     for (const n of ["pointerleave", "focusout"]) stage.addEventListener(n, () => this.setHot(null));
 
+    this.listenDrag(stage);
     stage.addEventListener("click", (e) => {
       const id = planetOf(e);
       if (id) this.to(id, instant());
@@ -103,6 +111,70 @@ export class Orbit {
     };
     new MutationObserver(read).observe(stage, { attributeFilter: ["data-elegido"] });
     read();
+  }
+
+  /** La línea se toma y se mueve de lado. Adelante sigue al cursor; si se toma atrás, también. */
+  private listenDrag(stage: HTMLElement): void {
+    let id = -1;
+    let x0 = 0;
+    let last = 0;
+    let time = 0;
+    let way = 1;
+    let moved = false;
+    stage.addEventListener("pointerdown", (e) => {
+      if (!e.isPrimary || e.button !== 0) return;
+      id = e.pointerId;
+      x0 = last = e.clientX;
+      moved = false;
+      const q = stage.getBoundingClientRect();
+      way = e.clientY - q.top < this.h * 0.41 - 6 ? 1 : -1;
+    });
+    stage.addEventListener("pointermove", (e) => {
+      if (e.pointerId !== id) return;
+      if (!this.dragging) {
+        if (Math.abs(e.clientX - x0) < 8) return;
+        // Recién ahora es arrastre y no un clic
+        this.dragging = moved = true;
+        this.target = null;
+        stage.setPointerCapture(id);
+        stage.toggleAttribute("data-tomada", true);
+        last = e.clientX;
+        time = e.timeStamp;
+        return;
+      }
+      const turn = ((e.clientX - last) / (this.stageWidth * 0.4)) * way;
+      const dt = Math.max(0.004, (e.timeStamp - time) / 1000);
+      last = e.clientX;
+      time = e.timeStamp;
+      this.a += turn;
+      this.v += (Math.max(-6, Math.min(6, turn / dt)) - this.v) * 0.4;
+      this.onChange();
+    });
+    const end = (e: PointerEvent) => {
+      if (e.pointerId !== id) return;
+      id = -1;
+      if (!this.dragging) return;
+      this.dragging = false;
+      stage.removeAttribute("data-tomada");
+      if (e.timeStamp - time > 120) this.v = 0;
+      // El clic que sigue a un arrastre llega enseguida; después, los clics vuelven a valer
+      setTimeout(() => (moved = false), 80);
+      this.hold = REST;
+      this.onChange();
+    };
+    for (const n of ["pointerup", "pointercancel"] as const) stage.addEventListener(n, end);
+    // Soltar sobre un planeta no lo elige
+    stage.addEventListener(
+      "click",
+      (e) => {
+        if (!moved) return;
+        moved = false;
+        e.stopPropagation();
+        e.preventDefault();
+      },
+      true,
+    );
+    stage.addEventListener("dragstart", (e) => e.preventDefault());
   }
 
   private setHot(id: PlanetId | null): void {
@@ -123,6 +195,7 @@ export class Orbit {
   }
 
   move(dt: number, still: boolean): void {
+    if (this.dragging) return;
     if (this.target !== null) {
       this.a += (this.target - this.a) * (1 - Math.exp(-dt * 3));
       if (Math.abs(this.target - this.a) < 0.004) {
@@ -158,6 +231,13 @@ export class Orbit {
       });
     }
     this.box = this.buttons.get("lumina")?.el.offsetWidth ?? 400;
+    const { rx, ry } = this.axes;
+    this.plate?.measure(w, h, h * 0.41, rx, ry, LEAN);
+  }
+
+  /** Semiejes de la órbita. */
+  private get axes(): { rx: number; ry: number } {
+    return { rx: this.stageWidth * (this.narrow ? 0.36 : 0.41), ry: this.h * 0.2 };
   }
 
   private get nameHeight(): number {
@@ -166,8 +246,7 @@ export class Orbit {
 
   layout(): OrbitLayout {
     const { a, box, narrow, nameHeight: nameH } = this;
-    const rx = this.stageWidth * (narrow ? 0.36 : 0.41);
-    const ry = this.h * 0.2;
+    const { rx, ry } = this.axes;
     const at = (t: number): [number, number] => {
       const x = Math.cos(t) * rx;
       const y = Math.sin(t) * ry;
@@ -218,6 +297,7 @@ export class Orbit {
     const nameH = this.nameHeight;
     const speed = this.target !== null ? 1 : still ? 0 : Math.min(1, this.v / 0.12);
     for (const { k, id, x, y, depth: d, scale } of layout.bodies) {
+      if (id === this.selected) this.plate?.update(x, y, this.a + k * THIRD);
       const button = this.buttons.get(id);
       if (!button) continue;
       const { el, label, summary } = button;

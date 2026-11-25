@@ -5,7 +5,18 @@ const { about } = await getSite();
 ---
 
 <section id="sobre-mi" aria-labelledby="titulo-sobre-mi">
-  <div class="retrato" aria-hidden="true"><canvas class="escena" data-escena="retrato"></canvas></div>
+  <div class="retrato" aria-hidden="true">
+    <canvas class="escena" data-escena="retrato"></canvas>
+    <svg class="lamina solo-js" data-luz>
+      <circle r="1.5" stroke-dasharray="1 5"></circle>
+      <circle r="2.3" stroke-dasharray="8 5 1 5"></circle>
+      <path d="M-2.6 0H2.6M0 -2.6V2.6" stroke-dasharray="1 6"></path>
+      <path d="M1.5 -.06V.06M2.3 -.06V.06M-1.5 -.06V.06M-2.3 -.06V.06"></path>
+      {[-2.1, -1.45, 1.45, 2.1].map((b) => <path class="rayo-fijo" data-b={b} />)}
+      <path class="rayo" data-rayo></path>
+    </svg>
+    <span class="lectura solo-js" data-lectura></span>
+  </div>
   <div class="textos">
     <SectionTitle id="titulo-sobre-mi" text={about.title} size="t-sub" />
     <p class="destacado t-grande">{about.highlights.map((h) => <><span class="luz">{h}</span>{" "}</>)}</p>

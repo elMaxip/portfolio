@@ -23,7 +23,7 @@ main:
     text: "Conmigo hablas directo, sin intermediarios: te escucho, te propongo algo que puedas pagar y te muestro avances mientras lo construyo."
   projects:
     title: Proyectos
-    hint: Elige un planeta para aterrizar en él.
+    hint: Elige un planeta para aterrizar en él, o arrastra la órbita.
   process:
     title: Así trabajo
   services:

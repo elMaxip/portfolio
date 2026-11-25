@@ -1,3 +1,4 @@
+import ProjectFigure from "./ProjectFigure";
 import { type MouseEvent, useEffect, useRef, useState } from "react";
 
 export interface Screenshot {
@@ -26,6 +27,9 @@ interface Props {
 }
 
 const SIZES = "(min-width: 1060px) calc(100vw - 540px), calc(100vw - 76px)";
+
+/** Su contenido lo escribe el motor, quizá antes de que React llegue: React no lo toca. */
+const OWNED_BY_ENGINE = { suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: "" } };
 
 /** Deja ver el viaje del planeta al frente antes de bajar. */
 const TRAVEL_MS = 900;
@@ -79,6 +83,8 @@ export default function Projects({ projects }: Props) {
   return (
     <>
       <div className="orbita solo-js" role="group" aria-label="Elegir proyecto" data-elegido={selected}>
+        {/* Trazos detrás de los planetas: engine/orbitplate.ts */}
+        <svg className="lamina" data-trazos="" aria-hidden="true" {...OWNED_BY_ENGINE} />
         <canvas data-escena="sistema" aria-hidden="true" />
         {projects.map((project) => (
           <button
@@ -107,7 +113,7 @@ export default function Projects({ projects }: Props) {
       </p>
 
       <div className="proyectos-lista" id="panel-proyecto" ref={panel}>
-        {projects.map((project) => {
+        {projects.map((project, index) => {
           const shot = shots[project.id] ?? 0;
           return (
             <article
@@ -115,6 +121,7 @@ export default function Projects({ projects }: Props) {
               key={project.id}
               aria-labelledby={`proyecto-${project.id}`}
               data-activo={project.id === selected || undefined}
+              data-zona=""
             >
               <div className="proyecto-barra">
                 <h3 className="t-ventana" id={`proyecto-${project.id}`} translate="no">
@@ -127,7 +134,7 @@ export default function Projects({ projects }: Props) {
               </div>
               <div className="proyecto-cuerpo">
                 <div className="proyecto-visual">
-                  <div className="capturas" style={{ background: project.background }}>
+                  <div className="capturas" data-mira="" style={{ background: project.background }}>
                     {project.screenshots.map((s, i) => (
                       <figure className="captura" key={s.label} data-activa={i === shot || undefined}>
                         <img
@@ -143,6 +150,7 @@ export default function Projects({ projects }: Props) {
                         <figcaption>{s.label}</figcaption>
                       </figure>
                     ))}
+                    <span className="mira" aria-hidden="true" {...OWNED_BY_ENGINE} />
                   </div>
                   <div className="capturas-botones solo-js" role="group" aria-label={`Capturas de ${project.name}`}>
                     {project.screenshots.map((s, i) => (
@@ -160,13 +168,13 @@ export default function Projects({ projects }: Props) {
                 </div>
                 <div className="proyecto-textos">
                   <p className="sin-js t-resumen">{project.summary}</p>
-                  <div>
+                  <div className="hito">
                     <h4 className="t-punto">
                       <span aria-hidden="true"># </span>El problema
                     </h4>
                     <p>{project.problem}</p>
                   </div>
-                  <div>
+                  <div className="hito">
                     <h4 className="t-punto">
                       <span aria-hidden="true"># </span>Lo que construí
                     </h4>
@@ -178,6 +186,7 @@ export default function Projects({ projects }: Props) {
                       {project.link.label}
                     </a>
                   )}
+                  <ProjectFigure id={project.id} number={index + 1} />
                 </div>
               </div>
             </article>
