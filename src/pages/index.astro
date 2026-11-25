@@ -13,7 +13,8 @@ import "../styles/appearance.css";
 const site = await getSite();
 ---
 
-<Layout title={site.name} description={site.description}>
+<Layout title={site.title} description={site.description}>
+  <a class="salto" href="#proyectos">Ir a los proyectos</a>
   <Hero />
   <main>
     <About />

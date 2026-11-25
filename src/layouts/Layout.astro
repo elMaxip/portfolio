@@ -1,4 +1,11 @@
 ---
+import plex400 from "@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-400-normal.woff2?url";
+import plex500 from "@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-500-normal.woff2?url";
+import plex600 from "@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-600-normal.woff2?url";
+import hanken from "@fontsource-variable/hanken-grotesk/files/hanken-grotesk-latin-wght-normal.woff2?url";
+import sixtyfour from "@fontsource-variable/sixtyfour/files/sixtyfour-latin-full-normal.woff2?url";
+import unbounded from "@fontsource-variable/unbounded/files/unbounded-latin-wght-normal.woff2?url";
+import { getSite } from "../lib/content";
 import "../styles/fonts.css";
 import "../styles/colors.css";
 import "../styles/base.css";
@@ -10,8 +17,29 @@ import "../styles/motion.css";
 interface Props {
   title: string;
   description: string;
+  /** Para páginas que no deben aparecer en buscadores. */
+  hidden?: boolean;
 }
-const { title, description } = Astro.props;
+const { title, description, hidden = false } = Astro.props;
+const { name, footer } = await getSite();
+
+// Sin dominio (ver astro.config.mjs) todavía no se publica
+const url = !hidden && Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
+const image = url && new URL("/compartir.jpg", Astro.site).href;
+const person = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name,
+  description,
+  url,
+  sameAs: footer.links.map((l) => l.href),
+};
+const fonts = {
+  mini: [unbounded, hanken],
+  retro: [sixtyfour, plex400],
+  suave: [plex500],
+  ascii: [plex600],
+};
 ---
 
 <!doctype html>
@@ -22,27 +50,54 @@ const { title, description } = Astro.props;
     <meta name="theme-color" content="#08090b" />
     <!-- La página ya es oscura: que Dark Reader no cambie los colores -->
     <meta name="darkreader-lock" />
-    <!-- PENDIENTE: quitar noindex al publicar -->
-    <meta name="robots" content="noindex" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    {url ? <link rel="canonical" href={url} /> : <meta name="robots" content="noindex" />}
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es_CL" />
+    <meta property="og:site_name" content={name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    {
+      url && (
+        <>
+          <meta property="og:url" content={url} />
+          <meta property="og:image" content={image} />
+          <meta property="og:image:type" content="image/jpeg" />
+          <meta property="og:image:width" content="1200" />
+          <meta property="og:image:height" content="630" />
+          <meta property="og:image:alt" content={`${name}, junto a un planeta con anillos hecho de caracteres`} />
+          <meta name="twitter:card" content="summary_large_image" />
+        </>
+      )
+    }
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <script is:inline>
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    {!hidden && <script is:inline type="application/ld+json" set:html={JSON.stringify(person)} />}
+    <script is:inline define:vars={{ fonts }}>
       // Aplica la apariencia guardada antes de pintar, para evitar parpadeo
-      (function () {
-        var data = document.documentElement.dataset;
-        data.js = "";
-        try {
-          var saved = JSON.parse(localStorage.getItem("apariencia") || "{}");
-          if (saved.tipo === "retro") data.tipo = "retro";
-          if (saved.planetas === "ascii") data.planetas = "ascii";
-        } catch (e) {}
-      })();
+      var data = document.documentElement.dataset;
+      data.js = "";
+      try {
+        var saved = JSON.parse(localStorage.getItem("apariencia") || "{}");
+        if (saved.tipo === "retro") data.tipo = "retro";
+        if (saved.planetas === "ascii") data.planetas = "ascii";
+      } catch (e) {}
+      // Adelanta solo las tipografías que se van a usar
+      fonts[data.tipo].concat(fonts[data.planetas]).forEach(function (href) {
+        var link = document.createElement("link");
+        link.rel = "preload";
+        link.as = "font";
+        link.type = "font/woff2";
+        link.crossOrigin = "";
+        link.href = href;
+        document.head.append(link);
+      });
     </script>
   </head>
   <body>
     <div id="inicio" class="tubo">
-      <a class="salto" href="#proyectos">Ir a los proyectos</a>
       <slot />
     </div>
   </body>

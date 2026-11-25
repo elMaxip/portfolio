@@ -15,7 +15,8 @@ const create = await loadStyle(name).catch(() => {
 });
 const engine = startEngine(name, create);
 
-if (new URLSearchParams(location.search).has("fps")) {
+// El medidor no va en la versión que se publica: solo en `pnpm dev` y `pnpm movil`
+if ((import.meta.env.DEV || import.meta.env.MODE === "movil") && new URLSearchParams(location.search).has("fps")) {
   const { showFps } = await import("./fps");
   showFps(engine);
 }

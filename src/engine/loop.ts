@@ -254,14 +254,17 @@ export function startEngine(name: StyleName, create: CreateStyle): Engine {
   const idle = (fn: () => void) =>
     "requestIdleCallback" in window ? requestIdleCallback(fn, { timeout: 3000 }) : setTimeout(fn, 300);
   function prepareAhead(painters: Painter[], wait: number): void {
+    const steps = painters.flatMap((p) => p.prepare);
     const next = () => {
-      painters.shift()?.prepare();
-      if (painters.length) idle(next);
+      steps.shift()?.();
+      if (steps.length) idle(next);
     };
     setTimeout(() => idle(next), wait);
   }
   // Después de que se forma el planeta de portada, que es lo más pesado
   prepareAhead(scenes.map((sc) => sc.painter), 3500);
+  // La elección pudo cambiar antes de que el motor empezara a escuchar
+  void restyle();
 
   return engine;
 }

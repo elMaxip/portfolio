@@ -10,7 +10,8 @@ interface Scene {
   /** Tamaño del carácter según el ancho. */
   fs: (w: number) => number;
   step: number;
-  prepare: () => void;
+  /** Cálculos que se pueden adelantar. */
+  prepare: (() => unknown)[];
   draw: (c: SoftCanvas, view: View) => void;
 }
 
@@ -34,7 +35,7 @@ export function createSoft(env: Env): Style {
   const hero: Scene = {
     fs: (w) => (w < 760 ? 5.5 : 6.5),
     step: SLOW,
-    prepare: () => void [stars(), heroPts(), heroRing()],
+    prepare: [stars, heroPts, heroRing],
     draw(c, { t, t0 }) {
       const { w, h } = c;
       const small = w < 760;
@@ -81,7 +82,7 @@ export function createSoft(env: Env): Style {
   const sistema: Scene = {
     fs: (w) => (w < 700 ? 5 : 6),
     step: FAST,
-    prepare: () => void [sunPts(), landPts(), bandPts(), bandRing(), corona()],
+    prepare: [sunPts, landPts, bandPts, bandRing, corona],
     draw(c, { t }) {
       const { orbit } = env;
       const layout = orbit.layout();
@@ -145,7 +146,7 @@ export function createSoft(env: Env): Style {
   const retrato: Scene = {
     fs: (w) => (w < 420 ? 5 : 6),
     step: SLOW,
-    prepare: () => void [disk(), photon()],
+    prepare: [disk, photon],
     draw(c, { t }) {
       const { w, h } = c;
       const R = Math.min(w, h) * 0.185;
@@ -184,7 +185,7 @@ export function createSoft(env: Env): Style {
   const faseA: Scene = {
     fs: () => 6,
     step: SLOW,
-    prepare: () => void rockPoints(),
+    prepare: [rockPoints],
     draw(c, { t }) {
       const { w, h } = c;
       c.rock({
@@ -203,7 +204,7 @@ export function createSoft(env: Env): Style {
   const faseB: Scene = {
     fs: () => 6,
     step: SLOW,
-    prepare: () => void moonPts(),
+    prepare: [moonPts],
     draw(c, { t }) {
       const { w, h } = c;
       c.ball({
@@ -224,10 +225,7 @@ export function createSoft(env: Env): Style {
   const faseC: Scene = {
     fs: () => 6,
     step: SLOW,
-    prepare: () => {
-      worldPts();
-      prepareColony();
-    },
+    prepare: [worldPts, prepareColony],
     draw(c, { t }) {
       const { w, h } = c;
       const cx = w / 2;
@@ -265,7 +263,7 @@ export function createSoft(env: Env): Style {
   const horizonte: Scene = {
     fs: (w) => (w < 760 ? 5.5 : 6.5),
     step: SLOW,
-    prepare: () => void [stars(), cap()],
+    prepare: [stars, cap],
     draw(c, { t }) {
       const { w, h } = c;
       const pts = cap();
@@ -301,7 +299,7 @@ export function createSoft(env: Env): Style {
       const canvas = new SoftCanvas(view);
       return {
         step: scene.step,
-        prepare: scene.prepare,
+        prepare: [...scene.prepare, () => canvas.prepare(scene.fs(view.el.clientWidth))],
         fit: () => canvas.fit(view.w, view.h, scene.fs(view.w)),
         measureText: () => canvas.measureText(),
         paint() {

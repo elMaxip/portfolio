@@ -10,7 +10,8 @@ interface Scene {
   /** Tamaño del carácter según el ancho. */
   fs: (w: number) => number;
   step: number;
-  prepare: () => void;
+  /** Cálculos que se pueden adelantar. */
+  prepare: (() => unknown)[];
   draw: (c: AsciiCanvas, view: View) => void;
 }
 
@@ -28,7 +29,7 @@ export function createAscii(env: Env): Style {
   const hero: Scene = {
     fs: (w) => (w < 760 ? 8 : 11),
     step: SLOW,
-    prepare: () => void [stars(), heroTex()],
+    prepare: [stars, heroTex],
     draw(c, { t, t0 }) {
       const { w, h } = c;
       const small = w < 760;
@@ -71,7 +72,7 @@ export function createAscii(env: Env): Style {
   const sistema: Scene = {
     fs: (w) => (w < 700 ? 7 : 10),
     step: FAST,
-    prepare: () => void [sunTex(), landTex(), bandTex(), corona()],
+    prepare: [sunTex, landTex, bandTex, corona],
     draw(c, { t }) {
       const { orbit } = env;
       const layout = orbit.layout();
@@ -132,7 +133,7 @@ export function createAscii(env: Env): Style {
   const retrato: Scene = {
     fs: (w) => (w < 420 ? 7 : 9),
     step: SLOW,
-    prepare: () => void [disk(), photon()],
+    prepare: [disk, photon],
     draw(c, { t }) {
       const { w, h } = c;
       const R = Math.min(w, h) * 0.185;
@@ -169,7 +170,7 @@ export function createAscii(env: Env): Style {
   const faseA: Scene = {
     fs: () => 10,
     step: SLOW,
-    prepare: () => void rockPoints(),
+    prepare: [rockPoints],
     draw(c, { t }) {
       const { w, h } = c;
       c.rock({
@@ -188,7 +189,7 @@ export function createAscii(env: Env): Style {
   const faseB: Scene = {
     fs: () => 10,
     step: SLOW,
-    prepare: () => void moonTex(),
+    prepare: [moonTex],
     draw(c, { t }) {
       const { w, h } = c;
       c.ball({
@@ -208,10 +209,7 @@ export function createAscii(env: Env): Style {
   const faseC: Scene = {
     fs: () => 8,
     step: SLOW,
-    prepare: () => {
-      worldTex();
-      prepareColony();
-    },
+    prepare: [worldTex, prepareColony],
     draw(c, { t }) {
       const { w, h } = c;
       const cx = w / 2;
@@ -233,7 +231,7 @@ export function createAscii(env: Env): Style {
   const horizonte: Scene = {
     fs: (w) => (w < 760 ? 8 : 11),
     step: SLOW,
-    prepare: () => void stars(),
+    prepare: [stars],
     draw(c, { t }) {
       const { w, h, kx, ky, cols, rows } = c;
       const R = Math.max(w * 0.86, 620);
@@ -268,10 +266,7 @@ export function createAscii(env: Env): Style {
       const canvas = new AsciiCanvas(view);
       return {
         step: scene.step,
-        prepare() {
-          scene.prepare();
-          if (!canvas.w && view.w) canvas.prepare(scene.fs(view.w));
-        },
+        prepare: [...scene.prepare, () => canvas.prepare(scene.fs(view.el.clientWidth))],
         fit: () => canvas.fit(view.w, view.h, scene.fs(view.w)),
         measureText: () => canvas.measureText(),
         paint() {

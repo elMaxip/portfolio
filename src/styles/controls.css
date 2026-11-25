@@ -104,3 +104,19 @@
 html:not([data-js]) .solo-js {
   display: none !important;
 }
+
+/* Modo de alto contraste: los fondos se pierden, así que los estados van con borde y color del sistema */
+@media (forced-colors: active) {
+  .cta,
+  .salto,
+  .titulo {
+    border: 1px solid;
+  }
+  [aria-pressed="true"]:not(.planeta),
+  [aria-pressed="true"] .rotulo-nombre,
+  [aria-expanded="true"] {
+    forced-color-adjust: none;
+    background: Highlight;
+    color: HighlightText;
+  }
+}

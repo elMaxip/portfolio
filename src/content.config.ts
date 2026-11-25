@@ -10,6 +10,8 @@ const site = defineCollection({
   schema: z.object({
     firstName: z.string(),
     lastName: z.string(),
+    // Para la pestaña, los buscadores y la vista previa al compartir.
+    title: z.string(),
     description: z.string(),
     whatsapp: z.object({
       // Solo dígitos y con código de país (569XXXXXXXX). Vacío mientras sea provisorio.

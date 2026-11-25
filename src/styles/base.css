@@ -1,6 +1,8 @@
 html {
   color-scheme: dark;
   scroll-behavior: smooth;
+  /* Lo que recibe el foco no queda debajo del botón Apariencia */
+  scroll-padding-bottom: 80px;
 }
 body {
   margin: 0;

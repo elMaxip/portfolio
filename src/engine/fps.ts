@@ -1,7 +1,7 @@
 import type { Engine } from "./loop";
 
 /**
- * Medidor para probar en el teléfono: se abre con ?fps en la dirección.
+ * Medidor para probar en el teléfono: con `pnpm movil`, se abre con ?fps en la dirección.
  * Muestra cuadros por segundo y cuánto tarda cada escena. Se carga solo si se pide.
  */
 export function showFps(engine: Engine): void {

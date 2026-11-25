@@ -145,6 +145,7 @@ export interface RockOptions {
 
 /** Densidad máxima de píxeles en este estilo. */
 const MAX_DENSITY = 1.5;
+const density = () => Math.min(MAX_DENSITY, Math.max(1, window.devicePixelRatio || 1));
 const CELL = 8;
 
 export class SoftCanvas {
@@ -171,8 +172,13 @@ export class SoftCanvas {
     this.ctx = view.ctx;
   }
 
+  /** Deja listos los caracteres. */
+  prepare(fs: number): void {
+    stamps(fs, density());
+  }
+
   fit(w: number, h: number, fs: number): void {
-    const d = Math.min(MAX_DENSITY, Math.max(1, window.devicePixelRatio || 1));
+    const d = density();
     this.w = w;
     this.h = h;
     this.d = d;

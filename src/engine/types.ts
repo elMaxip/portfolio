@@ -34,8 +34,8 @@ export interface Painter {
   fit(): void;
   /** Solo recalcula las zonas de texto. */
   measureText(): void;
-  /** Calcula los puntos por adelantado, sin dibujar. */
-  prepare(): void;
+  /** Cálculos que se pueden adelantar, en pasos cortos y sin dibujar. */
+  readonly prepare: readonly (() => unknown)[];
   paint(): void;
 }
 

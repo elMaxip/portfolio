@@ -1,6 +1,7 @@
 main:
   firstName: Máximo
   lastName: Soto
+  title: "Máximo Soto: páginas web, sistemas y automatizaciones en Chile"
   description: Hago páginas web, sistemas y automatizaciones que mantienen tu negocio en órbita.
   whatsapp:
     # PENDIENTE: número real, solo dígitos y con código de país. Vacío enlaza a https://wa.me/

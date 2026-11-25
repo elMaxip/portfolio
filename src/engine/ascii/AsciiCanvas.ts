@@ -89,6 +89,11 @@ export interface RockOptions {
 /** Densidad máxima de píxeles en este estilo. */
 const MAX_DENSITY = 2;
 
+function cellSize(fs: number): { d: number; cw: number; ch: number } {
+  const d = Math.min(MAX_DENSITY, window.devicePixelRatio || 1);
+  return { d, cw: Math.max(4, Math.round(fs * 0.6 * d)), ch: Math.max(7, Math.round(fs * 1.12 * d)) };
+}
+
 /** Una cuadrícula con un carácter por celda. */
 export class AsciiCanvas {
   w = 0;
@@ -124,26 +129,26 @@ export class AsciiCanvas {
     this.ctx = view.ctx;
   }
 
-  /** Elige el tamaño de celda y deja listos sus caracteres. */
+  /** Deja listos los caracteres. */
   prepare(fs: number): void {
-    const d = Math.min(MAX_DENSITY, window.devicePixelRatio || 1);
-    this.d = d;
-    this.cw = Math.max(4, Math.round(fs * 0.6 * d));
-    this.ch = Math.max(7, Math.round(fs * 1.12 * d));
-    this.sheet = atlas(fs, d, this.cw, this.ch);
+    const { d, cw, ch } = cellSize(fs);
+    atlas(fs, d, cw, ch);
   }
 
   fit(w: number, h: number, fs: number): void {
-    this.prepare(fs);
-    const d = this.d;
+    const { d, cw, ch } = cellSize(fs);
+    this.d = d;
+    this.cw = cw;
+    this.ch = ch;
+    this.sheet = atlas(fs, d, cw, ch);
     this.w = w;
     this.h = h;
     this.el.width = Math.max(1, Math.round(w * d));
     this.el.height = Math.max(1, Math.round(h * d));
-    this.kx = this.cw / d;
-    this.ky = this.ch / d;
-    this.cols = Math.max(1, Math.ceil(this.el.width / this.cw));
-    this.rows = Math.max(1, Math.ceil(this.el.height / this.ch));
+    this.kx = cw / d;
+    this.ky = ch / d;
+    this.cols = Math.max(1, Math.ceil(this.el.width / cw));
+    this.rows = Math.max(1, Math.ceil(this.el.height / ch));
     const n = this.cols * this.rows;
     this.lum = new Float32Array(n);
     this.pal = new Uint8Array(n);
