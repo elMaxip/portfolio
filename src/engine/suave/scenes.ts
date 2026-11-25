@@ -30,7 +30,7 @@ export function createSoft(env: Env): Style {
     phone ? globe(7, "craters", 0.032, 0.036) : globe(7, "craters", 0.0142, 0.0158),
   );
   const heroRing = lazy(() =>
-    phone ? hoops(1.3, 2.1, 0.03, 0.032, 0.5, 11) : hoops(1.3, 2.1, 0.0175, 0.0165, 0.36, 11),
+    phone ? hoops(1.3, 1.82, 0.03, 0.032, 0.5, 11) : hoops(1.3, 2.1, 0.0175, 0.0165, 0.36, 11),
   );
   const hero: Scene = {
     fs: (w) => (w < 760 ? 5.5 : 6.5),
@@ -39,8 +39,8 @@ export function createSoft(env: Env): Style {
     draw(c, { t, t0 }) {
       const { w, h } = c;
       const small = w < 760;
-      const R = small ? w * 0.31 : Math.min(w * 0.215, h * 0.335);
-      const cx = small ? w * 0.55 : w * 0.705;
+      const R = small ? w * 0.275 : Math.min(w * 0.215, h * 0.335);
+      const cx = small ? w * 0.5 : w * 0.705;
       const cy = small ? h * 0.335 : h * 0.53;
       const form = env.reduce ? 1 : Math.min(1, Math.max(0, t - t0) / (t0 ? 1.4 : 2.8));
       c.stars(stars(), h, 1);
@@ -49,7 +49,8 @@ export function createSoft(env: Env): Style {
         cx, cy, R,
         rot: t * 0.14,
         squash: 0.25,
-        lean: 0.1,
+        // En celular el anillo va más inclinado y angosto, para que quepa entero
+        lean: small ? 0.32 : 0.1,
         pal: ICE,
         form: 1 - Math.pow(1 - form, 3),
       };

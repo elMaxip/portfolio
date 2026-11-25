@@ -33,8 +33,8 @@ export function createAscii(env: Env): Style {
     draw(c, { t, t0 }) {
       const { w, h } = c;
       const small = w < 760;
-      const R = small ? w * 0.31 : Math.min(w * 0.215, h * 0.335);
-      const cx = small ? w * 0.55 : w * 0.705;
+      const R = small ? w * 0.275 : Math.min(w * 0.215, h * 0.335);
+      const cx = small ? w * 0.5 : w * 0.705;
       const cy = small ? h * 0.335 : h * 0.53;
       const form = env.reduce ? 1 : Math.min(1, Math.max(0, t - t0) / (t0 ? 1.4 : 2.6));
       c.stars(stars(), h, 1);
@@ -42,9 +42,10 @@ export function createAscii(env: Env): Style {
         cx, cy, R,
         rot: t * 0.9,
         squash: 0.25,
-        lean: 0.1,
+        // En celular el anillo va más inclinado y angosto, para que quepa entero
+        lean: small ? 0.32 : 0.1,
         inner: 1.3,
-        outer: 2.1,
+        outer: small ? 1.82 : 2.1,
         pal: ICE,
         form: 1 - Math.pow(1 - form, 3),
       };

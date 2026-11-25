@@ -47,4 +47,21 @@ const { about } = await getSite();
     color: var(--secundario);
     text-wrap: pretty;
   }
+  @media (max-width: 759px) {
+    section {
+      gap: 20px;
+      padding-block: 24px 40px;
+      scroll-margin-top: 0;
+    }
+    /* El agujero negro ocupa el alto que dejan los textos, para que se vean completos */
+    .retrato {
+      flex-basis: 100%;
+      max-width: none;
+      height: clamp(110px, 100svh - 510px, 320px);
+      aspect-ratio: auto;
+    }
+    .textos {
+      gap: 20px;
+    }
+  }
 </style>

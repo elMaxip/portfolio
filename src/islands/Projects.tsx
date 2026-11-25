@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { type MouseEvent, useEffect, useRef, useState } from "react";
 
 export interface Screenshot {
   label: string;
@@ -27,6 +27,9 @@ interface Props {
 
 const SIZES = "(min-width: 1060px) calc(100vw - 540px), calc(100vw - 76px)";
 
+/** Deja ver el viaje del planeta al frente antes de bajar. */
+const TRAVEL_MS = 900;
+
 /**
  * Selección de planeta, ventana y capturas. El movimiento es del motor (engine/orbit.ts):
  * lee data-planeta y data-elegido, y escribe el estilo de los botones. Por eso aquí
@@ -39,9 +42,38 @@ export default function Projects({ projects }: Props) {
   const [shots, setShots] = useState<Record<string, number>>({});
   const [notice, setNotice] = useState("");
 
-  const choose = (project: Project) => {
+  const panel = useRef<HTMLDivElement>(null);
+  const cancel = useRef(() => {});
+  useEffect(() => () => cancel.current(), []);
+
+  /** Baja a la ventana, salvo que ya se vea o que la persona se mueva antes. */
+  const goToPanel = () => {
+    cancel.current();
+    const root = document.documentElement;
+    const still = root.hasAttribute("data-paused") || matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const timer = setTimeout(
+      () => {
+        cancel.current();
+        const box = panel.current?.getBoundingClientRect();
+        if (!box || (box.top >= 0 && box.top < innerHeight * 0.3)) return;
+        panel.current?.scrollIntoView({ block: "start" });
+      },
+      still ? 0 : TRAVEL_MS,
+    );
+    const stop = () => cancel.current();
+    const moves = ["wheel", "touchmove", "keydown"] as const;
+    for (const m of moves) addEventListener(m, stop, { passive: true });
+    cancel.current = () => {
+      clearTimeout(timer);
+      for (const m of moves) removeEventListener(m, stop);
+    };
+  };
+
+  const choose = (project: Project, e: MouseEvent) => {
     setSelected(project.id);
     setNotice(`Mostrando ${project.name}`);
+    // Con teclado (detail 0) no se baja: el foco quedaría fuera de la pantalla
+    if (e.detail > 0) goToPanel();
   };
 
   return (
@@ -56,7 +88,7 @@ export default function Projects({ projects }: Props) {
             data-planeta={project.id}
             aria-pressed={project.id === selected}
             aria-controls="panel-proyecto"
-            onClick={() => choose(project)}
+            onClick={(e) => choose(project, e)}
           >
             <span className="rotulo" data-rotulo>
               <span className="rotulo-nombre t-planeta" translate="no">
@@ -74,7 +106,7 @@ export default function Projects({ projects }: Props) {
         {notice}
       </p>
 
-      <div className="proyectos-lista" id="panel-proyecto">
+      <div className="proyectos-lista" id="panel-proyecto" ref={panel}>
         {projects.map((project) => {
           const shot = shots[project.id] ?? 0;
           return (
@@ -89,6 +121,9 @@ export default function Projects({ projects }: Props) {
                   <span aria-hidden="true">&gt; </span>
                   {project.name}
                 </h3>
+                <a className="nav solo-js" href="#proyectos">
+                  Otros planetas <span aria-hidden="true">&nbsp;↑</span>
+                </a>
               </div>
               <div className="proyecto-cuerpo">
                 <div className="proyecto-visual">

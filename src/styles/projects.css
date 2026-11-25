@@ -93,7 +93,15 @@
   background: var(--ventana);
   color: var(--texto);
 }
+.proyectos-lista {
+  scroll-margin-top: 16px;
+}
 .proyecto-barra {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0 16px;
   padding: 8px;
   border-bottom: 2px dashed var(--borde-fuerte);
 }
@@ -103,6 +111,12 @@
   padding: 4px 14px;
   background: var(--texto);
   color: var(--fondo);
+}
+@media (max-width: 759px) {
+  .proyecto-barra .nav {
+    padding-inline: 6px;
+    font-size: 0.9375rem;
+  }
 }
 .proyecto-cuerpo {
   display: flex;
