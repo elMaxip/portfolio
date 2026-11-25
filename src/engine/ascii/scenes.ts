@@ -23,6 +23,7 @@ const WORLD_LIGHT = norm([0.78, -0.42, 0.46]);
 
 /** Estilo ASCII. En celular la cuadrícula ya tiene menos celdas. */
 export function createAscii(env: Env): Style {
+  const phone = env.phone;
   const stars = lazy(makeStars);
 
   const heroTex = lazy(() => surface(7, "craters"));
@@ -168,8 +169,9 @@ export function createAscii(env: Env): Style {
     },
   };
 
+  // En celular los cuerpos de Así trabajo son más chicos: con caracteres más chicos conservan el detalle
   const faseA: Scene = {
-    fs: () => 10,
+    fs: () => (phone ? 6.5 : 10),
     step: SLOW,
     prepare: [rockPoints],
     draw(c, { t }) {
@@ -188,7 +190,7 @@ export function createAscii(env: Env): Style {
 
   const moonTex = lazy(() => surface(41, "craters"));
   const faseB: Scene = {
-    fs: () => 10,
+    fs: () => (phone ? 6.5 : 10),
     step: SLOW,
     prepare: [moonTex],
     draw(c, { t }) {
@@ -208,7 +210,7 @@ export function createAscii(env: Env): Style {
 
   const worldTex = lazy(() => surface(71, "land"));
   const faseC: Scene = {
-    fs: () => 8,
+    fs: () => (phone ? 5.5 : 8),
     step: SLOW,
     prepare: [worldTex, prepareColony],
     draw(c, { t }) {

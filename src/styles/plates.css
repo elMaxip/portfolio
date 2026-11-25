@@ -27,10 +27,7 @@
   fill: var(--secundario);
   stroke: none;
 }
-.lamina text,
 .lectura {
-  fill: var(--secundario);
-  stroke: none;
   color: var(--secundario);
   font-family: var(--f-mono);
   font-size: 12px;
@@ -191,7 +188,7 @@
   right: calc(100% - var(--x) + 10px);
 }
 
-/* --- Así trabajo: el arco mide el avance --- */
+/* --- Así trabajo: la aguja sigue al cursor; el avance lo muestra la barra --- */
 .cuerpo {
   position: relative;
   width: 100%;
@@ -199,18 +196,11 @@
 .cuerpo .lamina {
   --giro: 0deg;
 }
-.cuerpo .arco {
-  stroke: var(--borde-fuerte);
-  stroke-width: 0.42;
-  /* Con trazo fijo, pathLength no vale */
-  vector-effect: none;
+.cuerpo .aro {
   transition: stroke 240ms ease;
 }
-li:is(:hover, [data-tocada]) > .cuerpo .arco {
+li:is(:hover, [data-tocada]) > .cuerpo .aro {
   stroke: var(--acento);
-}
-.cuerpo text {
-  font-size: 3.4px;
 }
 @media (min-width: 1000px) {
   /* Une un paso con el siguiente */

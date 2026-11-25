@@ -183,8 +183,10 @@ export function createSoft(env: Env): Style {
     },
   };
 
+  // En celular los cuerpos de Así trabajo son más chicos: con caracteres más chicos conservan el detalle
+  const fine = phone ? 4 : 6;
   const faseA: Scene = {
-    fs: () => 6,
+    fs: () => fine,
     step: SLOW,
     prepare: [rockPoints],
     draw(c, { t }) {
@@ -203,7 +205,7 @@ export function createSoft(env: Env): Style {
 
   const moonPts = lazy(() => globe(41, "craters", 0.026, 0.0275));
   const faseB: Scene = {
-    fs: () => 6,
+    fs: () => fine,
     step: SLOW,
     prepare: [moonPts],
     draw(c, { t }) {
@@ -224,7 +226,7 @@ export function createSoft(env: Env): Style {
 
   const worldPts = lazy(() => globe(71, "land", 0.032, 0.034));
   const faseC: Scene = {
-    fs: () => 6,
+    fs: () => fine,
     step: SLOW,
     prepare: [worldPts, prepareColony],
     draw(c, { t }) {

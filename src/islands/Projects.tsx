@@ -232,15 +232,11 @@ export default function Projects({ projects }: Props) {
                 <div className="proyecto-textos">
                   <p className="sin-js t-resumen">{project.summary}</p>
                   <div className="hito">
-                    <h4 className="t-punto">
-                      <span aria-hidden="true"># </span>El problema
-                    </h4>
+                    <h4 className="t-punto">El problema</h4>
                     <p>{project.problem}</p>
                   </div>
                   <div className="hito">
-                    <h4 className="t-punto">
-                      <span aria-hidden="true"># </span>Lo que construí
-                    </h4>
+                    <h4 className="t-punto">Lo que construí</h4>
                     <p>{project.solution}</p>
                   </div>
                   {project.note && <p className="nota">{project.note}</p>}

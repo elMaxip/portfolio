@@ -5,16 +5,33 @@
   initial-value: 100%;
 }
 
-.cursor {
+[data-tipo="retro"] .cursor {
   animation: cursor 1.06s steps(1, end) infinite;
+}
+[data-tipo="retro"][data-paused] .cursor {
+  animation: none;
+}
+/* En minimalista saluda después de la entrada y se va; su lugar queda, para no mover el texto */
+[data-tipo="mini"] .cursor {
+  opacity: 0;
+  /* Con otro nombre, para que empiece de nuevo al cambiar de letra */
+  animation: saludo 1.06s steps(1, end) 1.8s 3;
+}
+[data-tipo="mini"][data-paused] .cursor {
+  animation-play-state: paused;
 }
 @keyframes cursor {
   50% {
     opacity: 0;
   }
 }
-[data-paused] .cursor {
-  animation: none;
+@keyframes saludo {
+  from {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
 }
 
 /* Las letras del nombre entran una por una (solo minimalista) */

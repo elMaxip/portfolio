@@ -4,7 +4,6 @@ import { progressBar } from "../lib/format";
 import SectionTitle from "./SectionTitle.astro";
 const site = await getSite();
 const steps = await getSteps();
-// El arco mide el avance: de 18 espacios, cada uno son 20°
 const ticks = Array.from({ length: 12 }, (_, i) => i * 30);
 ---
 
@@ -17,14 +16,12 @@ const ticks = Array.from({ length: 12 }, (_, i) => i * 30);
           <div class="cuerpo" aria-hidden="true">
             <canvas data-escena={id} />
             <svg class="lamina solo-js" viewBox="-50 -50 100 100" data-apunta>
-              <circle r="48.5" stroke-dasharray="1 5" />
+              <circle class="aro" r="48.5" stroke-dasharray="1 5" />
               {ticks.map((a) => <path d={a % 90 ? "M0 -48.5V-47" : "M0 -48.5V-45"} transform={`rotate(${a})`} />)}
-              <circle class="arco" r="48.5" pathLength="360" stroke-dasharray={`${data.progress * 20} 360`} transform="rotate(-90)" />
               <g class="carta-aguja">
                 <path d="M0 -48.5V-52" stroke="var(--secundario)" />
                 <circle cy="-48.5" r="1.1" fill="var(--secundario)" stroke="none" />
               </g>
-              <text x="-49" y="49">{data.progress * 20}°</text>
             </svg>
           </div>
           <span class="barra" aria-hidden="true">
@@ -79,5 +76,19 @@ const ticks = Array.from({ length: 12 }, (_, i) => i * 30);
     margin: 0;
     color: var(--secundario);
     text-wrap: balance;
+  }
+  @media (max-width: 759px) {
+    .centrado {
+      margin-bottom: 32px;
+    }
+    ol {
+      row-gap: 40px;
+    }
+    li {
+      gap: 12px;
+    }
+    canvas {
+      height: 224px;
+    }
   }
 </style>
