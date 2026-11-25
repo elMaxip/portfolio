@@ -8,6 +8,7 @@ const services = await getServices();
 
 <section id="precios" aria-labelledby="titulo-precios">
   <SectionTitle id="titulo-precios" text={site.services.title} class="titulo-precios" />
+  <p class="nota">{site.services.note}</p>
   <div class="ventana">
     {
       services.map(({ data }) => (
@@ -30,7 +31,13 @@ const services = await getServices();
     scroll-margin-top: 24px;
   }
   .titulo-precios {
-    margin: 0 0 40px;
+    margin: 0 0 24px;
+  }
+  .nota {
+    max-width: 62ch;
+    margin: 0 0 32px;
+    color: var(--secundario-claro);
+    text-wrap: pretty;
   }
   .ventana {
     border: 2px solid var(--borde-fuerte);

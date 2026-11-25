@@ -1,9 +1,9 @@
 order: 2
 name: Huerto Hogar
 summary: Tienda de productos del campo
-problem: Una tienda de productos del campo necesitaba vender en línea con un catálogo fácil de editar.
+problem: "El encargo: que una tienda ficticia de productos del campo vendiera en línea, con un catálogo fácil de editar."
 solution: Una tienda con catálogo, carrito y cuentas, más un panel para cambiar precios, stock y fotos.
-note: Proyecto académico.
+note: "Proyecto académico: la tienda y los datos de las capturas son ficticios."
 screenshotBackground: "#f4f4f4"
 screenshots:
   - label: Catálogo

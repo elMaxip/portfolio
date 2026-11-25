@@ -27,7 +27,7 @@ const site = defineCollection({
     }),
     projects: z.object({ title: z.string(), hint: z.string() }),
     process: z.object({ title: z.string() }),
-    services: z.object({ title: z.string() }),
+    services: z.object({ title: z.string(), note: z.string() }),
     closing: z.object({ title: z.string(), text: z.string() }),
     footer: z.object({ text: z.string(), links: z.array(link) }),
   }),

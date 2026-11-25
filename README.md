@@ -25,11 +25,9 @@ Con `/?fps` al final se ven los cuadros por segundo.
 
 `pnpm publicable` termina con error mientras quede algo marcado `PENDIENTE`. Al resolver cada punto hay que borrar su comentario.
 
-1. `src/content/site.yaml`: número de WhatsApp (`569XXXXXXXX`) y promesas de Sobre mí.
-2. `src/content/services.yaml`: precios reales y qué incluye cada servicio.
-3. `src/content/steps.yaml`: promesas de Así trabajo.
-4. `src/content/projects/lumina.yaml`: mejores capturas de Lumina.
-5. `astro.config.mjs`: `site` con el dominio. Activa buscadores, sitemap y vista previa al compartir.
+1. `src/content/services.yaml`: confirmar precios y qué incluye cada servicio.
+2. `src/content/projects/lumina.yaml`: mejores capturas de Lumina.
+3. `astro.config.mjs`: `site` con el dominio. Activa buscadores, sitemap y vista previa al compartir.
 
 Se publica la carpeta `dist` en cualquier hosting estático. Conviene que el hosting:
 

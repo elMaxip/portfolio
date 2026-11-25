@@ -4,8 +4,8 @@ main:
   title: "Máximo Soto: páginas web, sistemas y automatizaciones en Chile"
   description: Hago páginas web, sistemas y automatizaciones que mantienen tu negocio en órbita.
   whatsapp:
-    # PENDIENTE: número real, solo dígitos y con código de país. Vacío enlaza a https://wa.me/
-    number: ""
+    # Solo dígitos y con código de país.
+    number: "56971675473"
     label: Escríbeme por WhatsApp
   hero:
     tagline: Hago páginas web, sistemas y automatizaciones que mantienen tu negocio en órbita.
@@ -20,8 +20,7 @@ main:
       - la planilla imposible,
       - la tienda que necesita
       - vender en línea.
-    # PENDIENTE: confirmar estas promesas y la mención a Duoc UC.
-    text: "Estudio Ingeniería en Informática en Duoc UC. Conmigo hablas directo, sin intermediarios: te escucho, te propongo algo que puedas pagar y te muestro avances mientras lo construyo."
+    text: "Conmigo hablas directo, sin intermediarios: te escucho, te propongo algo que puedas pagar y te muestro avances mientras lo construyo."
   projects:
     title: Proyectos
     hint: Elige un planeta para aterrizar en él.
@@ -29,6 +28,7 @@ main:
     title: Así trabajo
   services:
     title: Servicios y precios
+    note: "Son precios de referencia: el valor final depende de lo que necesites. Si tienes otro presupuesto, cuéntame y ajustamos el proyecto para que te alcance."
   closing:
     title: ¿Despegamos?
     text: Cuéntame qué necesita tu negocio y te respondo con una propuesta.
