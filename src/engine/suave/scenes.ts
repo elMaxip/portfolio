@@ -1,7 +1,8 @@
+import { AIM_X, AIM_Y, CORNERS } from "../orbit";
 import { drawColony, prepareColony } from "../colony";
 import { lazy, makeStars, noise, norm, points, rng } from "../math";
 import { rockPoints } from "../rock";
-import { BLUE, ICE, MOON, type Env, type Painter, type SceneKey, type Style, type View } from "../types";
+import { AMBER, BLUE, GREEN, ICE, MOON, type Env, type Painter, type SceneKey, type Style, type View } from "../types";
 import { forgetSheets, GLYPHS, level, SoftCanvas } from "./SoftCanvas";
 import { globe, hoops } from "./shapes";
 
@@ -15,8 +16,11 @@ interface Scene {
 
 /** Unos 30 cuadros por segundo. */
 const SLOW = 1 / 31;
+/** Unos 60. Deja margen para pantallas de 120 o 144 Hz. */
+const FAST = 1 / 75;
 
 const HERO_LIGHT = norm([0.62, -0.5, 0.6]);
+const SIDE_LIGHT = norm([-0.5, -0.5, 0.7]);
 const ROCK_LIGHT = norm([0.72, -0.42, 0.42]);
 const MOON_LIGHT = norm([0.9, -0.12, 0.28]);
 const WORLD_LIGHT = norm([0.86, -0.36, 0.1]);
@@ -65,6 +69,78 @@ export function createSoft(env: Env): Style {
         mouse: env.mouse,
       });
       c.ring(ring, true);
+    },
+  };
+
+  // Proyectos: Lumina es un sol, Huerto Hogar tiene continentes y MiHorario, bandas y anillo
+  const pitch = phone ? 0.085 : 0.034;
+  const sunPts = lazy(() => globe(3, "sun", pitch, pitch * 1.06));
+  const landPts = lazy(() => globe(21, "land", pitch * 0.8, pitch * 0.84));
+  const bandPts = lazy(() => globe(9, "bands", pitch * 1.1, pitch * 1.3));
+  const bandRing = lazy(() => hoops(1.35, 1.95, phone ? 0.09 : 0.035, phone ? 0.09 : 0.036, 0.6, 17));
+  const corona = lazy(() => points(phone ? 500 : 1700, 0, 1, 31));
+  const DOT = GLYPHS.indexOf("·");
+  const DASH = GLYPHS.indexOf("-");
+  const PLUS = GLYPHS.indexOf("+");
+  const BAR = GLYPHS.indexOf("|");
+  const sistema: Scene = {
+    fs: (w) => (w < 700 ? 5 : 6),
+    step: FAST,
+    prepare: () => void [sunPts(), landPts(), bandPts(), bandRing(), corona()],
+    draw(c, { t }) {
+      const { orbit } = env;
+      const layout = orbit.layout();
+      const { cx, cy, box } = layout;
+      const count = c.w < 700 ? 150 : 420;
+      for (let i = 0; i < count; i++) {
+        const a = (i / count) * Math.PI * 2;
+        const q = layout.line(a);
+        if (!q) continue;
+        const l = 0.14 + 0.24 * q.depth + layout.trail(a, 0.5, 2.4);
+        c.put(cx + q.x, cy + q.y, Math.min(0.9, l), ICE, l > 0.4 ? DASH : DOT);
+      }
+      for (const { k, id, x: qx, y: qy, scale } of layout.bodies) {
+        const x = cx + qx;
+        const y = cy + qy;
+        const B = box * scale;
+        const thin = Math.min(1, 0.6 + 0.4 * scale);
+        if (k === 0) {
+          const R = B * 0.29;
+          const co = corona();
+          const n = Math.floor((co.length / 3) * thin);
+          for (let i = 0; i < n; i++) {
+            const a = co[i * 3] + t * 0.1;
+            const ray = 0.5 + 0.5 * Math.cos(a * 8 - t * 0.8);
+            const u = co[i * 3 + 1] * co[i * 3 + 1];
+            const e = 1.03 + 0.46 * u * (0.35 + 0.75 * ray) + 0.015 * Math.sin(t * 1.6 + i);
+            const h = co[i * 3 + 2];
+            const l = 0.5 * Math.max(0.12, 1 - (e - 1.03) * 2.2) * (0.6 + 0.4 * h);
+            c.put(x + Math.cos(a) * e * R, y + Math.sin(a) * e * R, l, BLUE, level(l * 0.8, h));
+          }
+          c.ball({ pts: sunPts(), pal: BLUE, cx: x, cy: y, R, rot: t * 0.18, tilt: 0.2, light: SIDE_LIGHT, emissive: true, thin });
+        } else if (k === 1) {
+          c.ball({ pts: landPts(), pal: GREEN, cx: x, cy: y, R: B * 0.36, rot: t * 0.16, tilt: 0.35, light: SIDE_LIGHT, thin });
+        } else {
+          const R = B * 0.25;
+          const ring = { pts: bandRing(), pal: AMBER, cx: x, cy: y, R, rot: t * 0.35, squash: 0.28, lean: 0.36, thin };
+          c.ring(ring, false);
+          c.ball({ pts: bandPts(), pal: AMBER, cx: x, cy: y, R, rot: t * 0.22, tilt: 0.36, light: SIDE_LIGHT, thin });
+          c.ring(ring, true);
+        }
+        // Mira discreta alrededor del planeta elegido o apuntado
+        const mark = orbit.aim(id, 0.85, 0.5);
+        if (!mark) continue;
+        const hx = B * AIM_X[k];
+        const hy = B * AIM_Y[k];
+        for (const [sx, sy] of CORNERS) {
+          c.put(x + sx * hx, y + sy * hy, mark, ICE, PLUS);
+          for (let j = 1; j < 4; j++) {
+            c.put(x + sx * (hx - j * 5), y + sy * hy, mark * (1 - j * 0.16), ICE, DASH);
+            if (j < 3) c.put(x + sx * hx, y + sy * (hy - j * 6), mark * (1 - j * 0.2), ICE, BAR);
+          }
+        }
+      }
+      orbit.place(layout, env.paused || env.reduce);
     },
   };
 
@@ -221,14 +297,12 @@ export function createSoft(env: Env): Style {
     },
   };
 
-  // "sistema" (la órbita de proyectos) llega en la etapa 4
-  const scenes: Partial<Record<SceneKey, Scene>> = { hero, retrato, faseA, faseB, faseC, horizonte };
+  const scenes: Record<SceneKey, Scene> = { hero, sistema, retrato, faseA, faseB, faseC, horizonte };
 
   return {
     forgetGlyphs: forgetSheets,
     create(view): Painter {
       const scene = scenes[view.key];
-      if (!scene) throw new Error(`Escena sin dibujo: ${view.key}`);
       const canvas = new SoftCanvas(view);
       return {
         step: scene.step,

@@ -20,6 +20,8 @@ const { title, description } = Astro.props;
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#08090b" />
+    <!-- La página ya es oscura: que Dark Reader no cambie los colores -->
+    <meta name="darkreader-lock" />
     <!-- PENDIENTE: quitar noindex al publicar -->
     <meta name="robots" content="noindex" />
     <title>{title}</title>

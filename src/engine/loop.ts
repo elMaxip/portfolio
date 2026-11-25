@@ -1,3 +1,4 @@
+import { Orbit } from "./orbit";
 import { createSoft } from "./suave/scenes";
 import type { Env, Painter, SceneKey, Style, View } from "./types";
 
@@ -29,6 +30,7 @@ export function startEngine(): Engine {
     paused: html.hasAttribute("data-paused"),
     phone: SMALL.matches,
     mouse: { x: -9999, y: -9999 },
+    orbit: new Orbit(),
   };
 
   let style: Style = createSoft(env);
@@ -56,6 +58,7 @@ export function startEngine(): Engine {
     sc.w = sc.el.clientWidth;
     sc.h = sc.el.clientHeight;
     sc.fitted = sc.w > 0 && sc.h > 0;
+    if (sc.fitted && sc.key === "sistema") env.orbit.measure(sc.w, sc.h);
     if (sc.fitted) sc.painter.fit();
     sc.dirty = true;
   }
@@ -89,6 +92,12 @@ export function startEngine(): Engine {
       if (!sc.visible) continue;
       if (!sc.fitted) fit(sc);
       if (!sc.fitted) continue;
+      if (sc.key === "sistema") {
+        // Un planeta elegido viaja al frente aunque la página esté en pausa
+        if (still && env.orbit.target !== null) sc.dirty = true;
+        env.orbit.move(dt, still);
+        more ||= env.orbit.target !== null;
+      }
       if (!still) {
         more = true;
         sc.t += dt;
@@ -171,6 +180,15 @@ export function startEngine(): Engine {
     stage.addEventListener("pointerleave", () => {
       env.mouse.x = env.mouse.y = -9999;
     });
+  }
+
+  const system = scenes.find((sc) => sc.key === "sistema");
+  if (system?.el.parentElement) {
+    env.orbit.listen(system.el.parentElement, () => env.reduce);
+    env.orbit.onChange = () => {
+      system.dirty = true;
+      wake();
+    };
   }
 
   // Adelanta los cálculos de las escenas de más abajo, de a una, cuando el equipo está libre

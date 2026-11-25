@@ -1,3 +1,5 @@
+import type { Orbit } from "./orbit";
+
 export type Vec3 = readonly [number, number, number];
 
 export type SceneKey = "hero" | "sistema" | "retrato" | "faseA" | "faseB" | "faseC" | "horizonte";
@@ -9,6 +11,7 @@ export interface Env {
   phone: boolean;
   /** Cursor, en píxeles CSS dentro del lienzo de la portada. */
   mouse: { x: number; y: number };
+  readonly orbit: Orbit;
 }
 
 /** Un lienzo y su reloj. Lo comparten todos los estilos. */

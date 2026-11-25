@@ -31,9 +31,9 @@ const projects: Project[] = await Promise.all(
 <section id="proyectos" aria-labelledby="titulo-proyectos">
   <div class="cabecera">
     <SectionTitle id="titulo-proyectos" text={site.projects.title} />
-    <!-- La frase "Elige un planeta…" (site.projects.hint) vuelve con la órbita, en la etapa 4 -->
+    <p class="pista solo-js">{site.projects.hint}</p>
   </div>
-  <ProjectsIsland projects={projects} />
+  <ProjectsIsland projects={projects} client:visible={{ rootMargin: "800px" }} />
 </section>
 
 <style>
@@ -47,5 +47,9 @@ const projects: Project[] = await Promise.all(
     align-items: center;
     justify-content: space-between;
     gap: 12px 40px;
+  }
+  .pista {
+    margin: 0;
+    color: var(--secundario);
   }
 </style>
