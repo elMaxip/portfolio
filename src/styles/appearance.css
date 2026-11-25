@@ -52,6 +52,17 @@
   background: var(--ventana);
   animation: abrePanel 260ms cubic-bezier(0.22, 1, 0.36, 1);
 }
+@media (max-width: 759px) {
+  /* El botón va al centro del pie */
+  .ajustes {
+    margin: 8px 0 0;
+  }
+  .ajustes-panel {
+    right: auto;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
 .ajustes-panel[hidden] {
   display: none;
 }
