@@ -63,12 +63,18 @@
   stroke-opacity: 0.8;
   stroke-width: 1.25;
 }
+/* Solo mientras el cursor o el dedo mueve el rayo */
 .retrato .lectura {
   position: absolute;
   right: 0;
   bottom: 0;
   padding: 2px 4px;
   background: var(--fondo);
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+.retrato .lectura[data-visible] {
+  opacity: 1;
 }
 
 /* --- Proyectos: la órbita se puede tomar y mover --- */
@@ -98,11 +104,6 @@
   stroke: var(--acento);
   stroke-opacity: 0.4;
   stroke-dasharray: 3 4;
-}
-.orbita .lamina [text-anchor="end"] {
-  paint-order: stroke;
-  stroke: var(--fondo);
-  stroke-width: 4px;
 }
 
 /* --- Ventana de proyecto --- */
@@ -141,23 +142,13 @@
 }
 @media (min-width: 1060px) {
   html[data-js] .figura {
-    display: flex !important;
-    align-items: flex-end;
-    gap: 10px;
+    display: block !important;
     margin-top: 12px;
   }
 }
 .figura svg {
   --giro: 40deg;
-  flex: 1;
-  min-width: 0;
   max-width: 260px;
-}
-.figura span {
-  color: var(--secundario);
-  font-family: var(--f-mono);
-  font-size: 0.75rem;
-  white-space: nowrap;
 }
 /* Cruz con coordenadas sobre la captura, solo con cursor */
 .mira {

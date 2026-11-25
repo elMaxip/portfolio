@@ -1,7 +1,7 @@
 const spokes = Array.from({ length: 24 }, (_, i) => i * 15);
 
 /** Lámina pequeña de cada planeta. La aguja sigue al cursor (engine/plates.ts). */
-export default function ProjectFigure({ id, number }: { id: string; number: number }) {
+export default function ProjectFigure({ id }: { id: string }) {
   return (
     <div className="figura solo-js" aria-hidden="true">
       <svg viewBox="-130 -66 260 132" data-apunta="" suppressHydrationWarning>
@@ -43,7 +43,6 @@ export default function ProjectFigure({ id, number }: { id: string; number: numb
           <circle cy="-58" r="3.5" />
         </g>
       </svg>
-      <span>Fig. {number}</span>
     </div>
   );
 }

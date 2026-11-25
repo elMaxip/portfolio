@@ -151,7 +151,7 @@ export default function Projects({ projects }: Props) {
       </p>
 
       <div className="proyectos-lista" id="panel-proyecto" ref={panel}>
-        {projects.map((project, index) => {
+        {projects.map((project) => {
           const shot = shots[project.id] ?? 0;
           return (
             <article
@@ -249,7 +249,7 @@ export default function Projects({ projects }: Props) {
                       {project.link.label}
                     </a>
                   )}
-                  <ProjectFigure id={project.id} number={index + 1} />
+                  <ProjectFigure id={project.id} />
                 </div>
               </div>
             </article>

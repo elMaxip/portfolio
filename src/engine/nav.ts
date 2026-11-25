@@ -5,8 +5,7 @@ const NUDGE = 8;
 export function startNav(): void {
   const nav = document.querySelector<HTMLElement>("[data-carta]");
   const button = nav?.querySelector("button");
-  const angle = nav?.querySelector<HTMLElement>("[data-angulo]");
-  if (!nav || !button || !angle) return;
+  if (!nav || !button) return;
   const links = [...nav.querySelectorAll<HTMLAnchorElement>("a")];
   const sections = links.map((a) => document.querySelector<HTMLElement>(a.hash));
 
@@ -54,10 +53,8 @@ export function startNav(): void {
     // La siguiente sección manda un poco antes de llegar arriba
     const i = Math.min(stops.length - 1, Math.floor(position + 0.35));
 
-    const theta = progress * 360;
-    nav!.style.setProperty("--giro", `${theta.toFixed(1)}deg`);
+    nav!.style.setProperty("--giro", `${(progress * 360).toFixed(1)}deg`);
     nav!.style.setProperty("--lugar", position.toFixed(3));
-    angle!.textContent = `θ ${theta.toFixed(0).padStart(3, "0")}°`;
     nav!.toggleAttribute("data-arriba", scrollY < innerHeight * 0.35);
     if (i === active) return;
     links[active].removeAttribute("aria-current");

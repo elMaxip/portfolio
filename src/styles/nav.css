@@ -20,12 +20,6 @@
   color: var(--texto);
   text-decoration: none;
 }
-.carta-numero {
-  color: var(--acento);
-  font-family: var(--f-mono);
-  font-size: 0.875rem;
-  font-variant-numeric: tabular-nums;
-}
 .carta-punto {
   position: relative;
   flex: none;
@@ -84,16 +78,6 @@
 .carta-orbita {
   color: var(--borde);
 }
-.carta-angulo {
-  position: absolute;
-  padding: 1px 4px;
-  background: var(--fondo);
-  color: var(--secundario);
-  font-family: var(--f-mono);
-  font-size: 0.75rem;
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
 
 /* --- Computador: en el margen derecho --- */
 @media (min-width: 1100px) {
@@ -120,12 +104,6 @@
     left: calc(50% - 160px);
     transform: translateY(calc(var(--lugar) * var(--paso)));
   }
-  .carta-angulo {
-    /* En el extremo de arriba del eje */
-    bottom: calc(100% + 60px);
-    left: 50%;
-    transform: translateX(-50%);
-  }
   .carta a {
     position: relative;
     justify-content: center;
@@ -136,9 +114,6 @@
   .carta-texto {
     position: absolute;
     right: calc(50% + 34px);
-    display: flex;
-    align-items: baseline;
-    gap: 8px;
     padding: 3px 10px;
     background: var(--fondo);
     font-weight: 500;
@@ -171,10 +146,6 @@
   .carta a:focus-visible .carta-texto {
     background: var(--texto);
     color: var(--fondo);
-  }
-  .carta a:hover .carta-numero,
-  .carta a:focus-visible .carta-numero {
-    color: inherit;
   }
   .carta a:focus-visible {
     outline-offset: -4px;
@@ -250,18 +221,12 @@
     left: calc(46.5px - 160px);
     transform: translateY(calc(var(--lugar) * var(--paso)));
   }
-  .carta-angulo {
-    display: none;
-  }
   .carta a {
     position: relative;
     gap: 34px;
     padding-inline-start: 23px;
   }
   .carta-texto {
-    display: flex;
-    align-items: baseline;
-    gap: 12px;
     font-weight: 600;
   }
   .carta a[aria-current] .carta-texto {
@@ -309,7 +274,7 @@ html:not([data-js]) .carta-texto {
   opacity: 1;
   transform: none;
 }
-html:not([data-js]) :is(.carta-eje, .carta-marca, .carta-punto, .carta-numero),
+html:not([data-js]) :is(.carta-eje, .carta-marca, .carta-punto),
 html:not([data-js]) .carta-texto::after {
   display: none;
 }

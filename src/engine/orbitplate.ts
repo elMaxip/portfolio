@@ -14,10 +14,7 @@ export class OrbitPlate {
     this.svg = svg;
     if (svg) {
       svg.innerHTML =
-        '<g data-t="ejes"><path data-t="lineas"/><path data-t="focos"/>' +
-        '<text data-t="f1" text-anchor="middle">F₁</text><text data-t="f2" text-anchor="middle">F₂</text>' +
-        '<text data-t="o">O</text><text data-t="a">a</text></g>' +
-        '<path class="radios" data-t="radios"/><text data-t="nota" text-anchor="end"/>';
+        '<g data-t="ejes"><path data-t="lineas"/><path data-t="focos"/></g><path class="radios" data-t="radios"/>';
     }
     this.part = (name) => svg?.querySelector<SVGElement>(`[data-t="${name}"]`) ?? null;
   }
@@ -37,24 +34,13 @@ export class OrbitPlate {
     this.part("ejes")?.setAttribute("transform", turn);
     this.part("lineas")?.setAttribute("d", axes);
     this.part("focos")?.setAttribute("d", `M${-c - 5} 0a5 5 0 1 0 10 0a5 5 0 1 0 -10 0M${c - 5} 0a5 5 0 1 0 10 0a5 5 0 1 0 -10 0`);
-    for (const [name, x, y] of [["f1", -c, 20], ["f2", c, 20], ["o", 7, -7], ["a", rx / 2, -8]] as const) {
-      this.part(name)?.setAttribute("x", String(x));
-      this.part(name)?.setAttribute("y", String(y));
-    }
-    const note = this.part("nota");
-    note?.setAttribute("x", String(w / 2 - 24));
-    note?.setAttribute("y", String(h - cy - 6));
   }
 
-  /** Posición y ángulo del planeta elegido. */
-  update(x: number, y: number, angle: number): void {
+  /** Posición del planeta elegido. */
+  update(x: number, y: number): void {
     const fx = this.c * this.cl;
     const fy = this.c * this.sl;
     const at = `${x.toFixed(1)} ${y.toFixed(1)}`;
     this.part("radios")?.setAttribute("d", `M${(-fx).toFixed(1)} ${(-fy).toFixed(1)}L${at}L${fx.toFixed(1)} ${fy.toFixed(1)}`);
-    // El ángulo se mide como en geometría: desde la derecha y hacia arriba
-    const deg = Math.round((((-angle * 180) / Math.PI) % 360) + 360) % 360;
-    const note = this.part("nota");
-    if (note) note.textContent = `r₁ + r₂ = 2a · θ ${String(deg).padStart(3, "0")}°`;
   }
 }

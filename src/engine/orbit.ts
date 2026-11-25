@@ -297,7 +297,7 @@ export class Orbit {
     const nameH = this.nameHeight;
     const speed = this.target !== null ? 1 : still ? 0 : Math.min(1, this.v / 0.12);
     for (const { k, id, x, y, depth: d, scale } of layout.bodies) {
-      if (id === this.selected) this.plate?.update(x, y, this.a + k * THIRD);
+      if (id === this.selected) this.plate?.update(x, y);
       const button = this.buttons.get(id);
       if (!button) continue;
       const { el, label, summary } = button;

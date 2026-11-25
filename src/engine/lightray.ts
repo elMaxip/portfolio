@@ -87,11 +87,15 @@ export function startLightRay(engine: Engine): void {
     draw();
   });
 
+  /** La lectura se ve solo mientras alguien mueve el rayo. */
+  const show = (value: boolean) => read.toggleAttribute("data-visible", value);
+
   let off = 0;
   follow(box, {
     move(x) {
       if (!R) return;
       clearTimeout(off);
+      show(true);
       const q = box.getBoundingClientRect();
       wanted = (x - q.left - q.width / 2) / R;
       // En pausa el motor no dibuja: se responde de inmediato
@@ -102,6 +106,7 @@ export function startLightRay(engine: Engine): void {
     },
     end(touch) {
       clearTimeout(off);
+      show(false);
       off = window.setTimeout(() => (wanted = null), touch ? 1200 : 0);
     },
   });
