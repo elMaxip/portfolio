@@ -55,7 +55,7 @@ const site = await getSite();
 </style>
 
 <script>
-  // El motor (etapa 3) observa data-paused en <html>
+  // El motor observa data-paused en <html>
   const button = document.querySelector<HTMLButtonElement>("[data-pausar]");
   button?.addEventListener("click", () => {
     const paused = document.documentElement.toggleAttribute("data-paused");

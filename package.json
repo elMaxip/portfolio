@@ -10,7 +10,8 @@
     "dev": "astro dev",
     "check": "astro check",
     "build": "astro check && astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "movil": "astro build && astro preview --host --port 4400"
   },
   "dependencies": {
     "@astrojs/react": "^7.1.9",
