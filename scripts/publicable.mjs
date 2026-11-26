@@ -18,7 +18,8 @@ for (const file of [...files("src"), path.join(root, "astro.config.mjs")]) {
     });
 }
 
-const html = readFileSync(path.join(root, "dist", "index.html"), "utf8");
+// La página para clientes es la que lleva WhatsApp
+const html = readFileSync(path.join(root, "dist", "servicios", "index.html"), "utf8");
 if (/href="https:\/\/wa\.me\/"/.test(html)) missing.push("dist: el botón de WhatsApp no tiene número");
 
 if (missing.length) {

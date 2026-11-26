@@ -1,20 +1,20 @@
 import { OrbitPlate } from "./orbitplate";
 
-/** Planetas en orden de giro. Son los id de los proyectos en src/content/projects. */
-export const PLANETS = ["lumina", "huerto", "horario"] as const;
-export type PlanetId = (typeof PLANETS)[number];
+/**
+ * Id de un planeta: el del proyecto (src/content/projects o src/content/profesional/projects).
+ * Los planetas y su orden de giro salen de los botones [data-planeta] del escenario.
+ */
+export type PlanetId = string;
 
 const TURN = Math.PI * 2;
-const THIRD = TURN / 3;
 const LEAN = -0.05;
 const CL = Math.cos(LEAN);
 const SL = Math.sin(LEAN);
 /** Distancia del centro del planeta a su nombre, en tamaños de botón. */
-const LABEL = [0.41, 0.39, 0.34];
+const LABEL: Record<PlanetId, number> = { lumina: 0.41, huerto: 0.39, horario: 0.34, rutarinde: 0.36 };
+const labelOf = (id: PlanetId) => LABEL[id] ?? 0.4;
 /** Segundos que descansa la órbita después de que un planeta llega al frente. */
 const REST = 5;
-
-const isPlanet = (id: string | undefined): id is PlanetId => PLANETS.some((p) => p === id);
 
 export interface OrbitBody {
   k: number;
@@ -58,7 +58,9 @@ export class Orbit {
   hover = false;
   /** Planeta bajo el cursor o con foco. */
   hot: PlanetId | null = null;
-  selected: PlanetId = "lumina";
+  selected: PlanetId = "";
+  /** Planetas en orden de giro. */
+  private ids: PlanetId[] = [];
   /** Avisa que hay que volver a dibujar aunque la página esté en pausa. */
   onChange: () => void = () => {};
 
@@ -77,6 +79,8 @@ export class Orbit {
   /** Escucha el escenario: los botones los maneja Projects.tsx. */
   listen(stage: HTMLElement, instant: () => boolean): void {
     this.stage = stage;
+    this.readIds();
+    const isPlanet = (id: string | undefined): id is PlanetId => !!id && this.ids.includes(id);
     this.plate = new OrbitPlate(stage);
     const canHover = matchMedia("(hover: hover)");
     const planetOf = (e: Event) => {
@@ -183,9 +187,19 @@ export class Orbit {
     this.onChange();
   }
 
+  private readIds(): void {
+    this.ids = [...(this.stage?.querySelectorAll<HTMLElement>("[data-planeta]") ?? [])].map((el) => el.dataset.planeta!);
+    if (!this.ids.includes(this.selected)) this.selected = this.ids[0] ?? "";
+  }
+
+  /** Ángulo entre un planeta y el siguiente. */
+  private get step(): number {
+    return TURN / Math.max(1, this.ids.length);
+  }
+
   /** Lleva un planeta al frente por el camino más corto. */
   to(id: PlanetId, instant: boolean): void {
-    const want = Math.PI / 2 - PLANETS.indexOf(id) * THIRD;
+    const want = Math.PI / 2 - this.ids.indexOf(id) * this.step;
     let diff = (want - this.a) % TURN;
     if (diff > Math.PI) diff -= TURN;
     if (diff < -Math.PI) diff += TURN;
@@ -221,7 +235,8 @@ export class Orbit {
     this.narrow = w < 700;
     this.stageWidth = this.stage?.clientWidth ?? w;
     this.buttons.clear();
-    for (const id of PLANETS) {
+    this.readIds();
+    for (const id of this.ids) {
       const el = this.stage?.querySelector<HTMLElement>(`[data-planeta="${id}"]`);
       if (!el) continue;
       this.buttons.set(id, {
@@ -230,7 +245,7 @@ export class Orbit {
         summary: el.querySelector<HTMLElement>("[data-resumen]"),
       });
     }
-    this.box = this.buttons.get("lumina")?.el.offsetWidth ?? 400;
+    this.box = this.buttons.get(this.ids[0])?.el.offsetWidth ?? 400;
     const { rx, ry } = this.axes;
     this.plate?.measure(w, h, h * 0.41, rx, ry, LEAN);
   }
@@ -245,7 +260,7 @@ export class Orbit {
   }
 
   layout(): OrbitLayout {
-    const { a, box, narrow, nameHeight: nameH } = this;
+    const { a, box, narrow, nameHeight: nameH, ids, step } = this;
     const { rx, ry } = this.axes;
     const at = (t: number): [number, number] => {
       const x = Math.cos(t) * rx;
@@ -254,13 +269,13 @@ export class Orbit {
     };
     const bodies: OrbitBody[] = [];
     const tags: [x: number, y: number, halfWidth: number, height: number][] = [];
-    for (let k = 0; k < 3; k++) {
-      const t = a + k * THIRD;
+    for (let k = 0; k < ids.length; k++) {
+      const t = a + k * step;
       const [x, y] = at(t);
       const depth = (Math.sin(t) + 1) / 2;
       const scale = 0.48 + 0.52 * depth;
-      bodies.push({ k, id: PLANETS[k], x, y, depth, scale });
-      const gap = LABEL[k] * box * scale;
+      bodies.push({ k, id: ids[k], x, y, depth, scale });
+      const gap = labelOf(ids[k]) * box * scale;
       tags.push([
         x,
         depth < 0.5 ? y - gap - nameH - 6 : y + gap,
@@ -283,8 +298,8 @@ export class Orbit {
       },
       trail(t, gain, decay) {
         let l = 0;
-        for (let k = 0; k < 3; k++) {
-          const behind = (((a + k * THIRD - t) % TURN) + TURN) % TURN;
+        for (let k = 0; k < ids.length; k++) {
+          const behind = (((a + k * step - t) % TURN) + TURN) % TURN;
           l += gain * Math.exp(-behind * decay);
         }
         return l;
@@ -296,7 +311,7 @@ export class Orbit {
   place(layout: OrbitLayout, still: boolean): void {
     const nameH = this.nameHeight;
     const speed = this.target !== null ? 1 : still ? 0 : Math.min(1, this.v / 0.12);
-    for (const { k, id, x, y, depth: d, scale } of layout.bodies) {
+    for (const { id, x, y, depth: d, scale } of layout.bodies) {
       if (id === this.selected) this.plate?.update(x, y);
       const button = this.buttons.get(id);
       if (!button) continue;
@@ -305,7 +320,7 @@ export class Orbit {
       el.style.zIndex = String(1 + Math.round(d * 100));
       if (label) {
         // Al fondo el nombre va encima; al frente, debajo
-        const up = -2 * LABEL[k] * layout.box - (nameH + 6) / scale;
+        const up = -2 * labelOf(id) * layout.box - (nameH + 6) / scale;
         label.style.transform = `${d < 0.5 ? `translateY(${up.toFixed(1)}px) ` : ""}scale(${(1 / scale).toFixed(4)})`;
         const swap = 1 - speed * (1 - Math.min(1, Math.abs(d - 0.5) * 14));
         label.style.opacity = (swap * (0.72 + 0.28 * d)).toFixed(3);
@@ -321,8 +336,13 @@ export class Orbit {
 }
 
 /** Medio ancho y medio alto de la mira de cada planeta, en tamaños de botón. */
-export const AIM_X = [0.43, 0.41, 0.46];
-export const AIM_Y = [0.4, 0.39, 0.33];
+const AIM: Record<PlanetId, [number, number]> = {
+  lumina: [0.43, 0.4],
+  huerto: [0.41, 0.39],
+  horario: [0.46, 0.33],
+  rutarinde: [0.42, 0.38],
+};
+export const aimOf = (id: PlanetId): [number, number] => AIM[id] ?? [0.42, 0.4];
 export const CORNERS = [
   [-1, -1],
   [1, -1],

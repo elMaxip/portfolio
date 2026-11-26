@@ -6,15 +6,18 @@ solution: Subes la planilla, eliges ramos y horas, y genera todos los horarios p
 link:
   label: Visitar MiHorario
   href: https://mihorario.vercel.app/
-screenshotBackground: "#f8f9fc"
-# No usar visualizador.png: muestra nombres reales de docentes.
+screenshotBackground: "#ffffff"
+# horarios.png se tomó con el archivo de ejemplo sin los nombres de los docentes: no reemplazarla por una con nombres reales.
 screenshots:
   - label: Subir archivo
     alt: Inicio de MiHorario, donde se sube el archivo Excel
     image: ../../assets/projects/mihorario/home.png
-  - label: Horas
-    alt: Selección de horas disponibles de lunes a sábado en MiHorario
-    image: ../../assets/projects/mihorario/seleccion-horas.png
-  - label: Asignaturas
-    alt: Lista de asignaturas con filtros en MiHorario
-    image: ../../assets/projects/mihorario/seleccion-asignaturas.png
+  - label: Planificador
+    alt: Planificador de MiHorario con asignaturas elegidas, cuántas secciones caben y la disponibilidad de lunes a sábado
+    image: ../../assets/projects/mihorario/planificador.png
+  - label: Sugerencia
+    alt: Asignatura que no cabe en las horas elegidas, con la sección más cercana y el botón Ampliar horas
+    image: ../../assets/projects/mihorario/sugerencia.png
+  - label: Horarios
+    alt: Horarios generados por MiHorario, con la semana del primero de 29 y las secciones para inscribir
+    image: ../../assets/projects/mihorario/horarios.png

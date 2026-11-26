@@ -1,4 +1,4 @@
-import { AIM_X, AIM_Y, CORNERS } from "../orbit";
+import { aimOf, CORNERS } from "../orbit";
 import { drawColony, prepareColony } from "../colony";
 import { lazy, makeStars, noise, norm, points, rng } from "../math";
 import { rockPoints } from "../rock";
@@ -42,7 +42,7 @@ export function createSoft(env: Env): Style {
       const R = small ? w * 0.275 : Math.min(w * 0.215, h * 0.335);
       const cx = small ? w * 0.5 : w * 0.705;
       const cy = small ? h * 0.335 : h * 0.53;
-      const form = env.reduce ? 1 : Math.min(1, Math.max(0, t - t0) / (t0 ? 1.4 : 2.8));
+      const form = env.reduce ? 1 : Math.min(1, Math.max(0, t - t0) / (t0 ? 1 : 1.8));
       c.stars(stars(), h, 1);
       const ring = {
         pts: heroRing(),
@@ -69,13 +69,15 @@ export function createSoft(env: Env): Style {
     },
   };
 
-  // Proyectos: Lumina es un sol, Huerto Hogar tiene continentes y MiHorario, bandas y anillo
+  // Proyectos: Lumina es un sol, Huerto Hogar tiene continentes, MiHorario, bandas y anillo,
+  // y RutaRinde es una luna con cráteres y un satélite que la recorre
   const pitch = phone ? 0.085 : 0.034;
   const sunPts = lazy(() => globe(3, "sun", pitch, pitch * 1.06));
   const landPts = lazy(() => globe(21, "land", pitch * 0.8, pitch * 0.84));
   const bandPts = lazy(() => globe(9, "bands", pitch * 1.1, pitch * 1.3));
   const bandRing = lazy(() => hoops(1.35, 1.95, phone ? 0.09 : 0.035, phone ? 0.09 : 0.036, 0.6, 17));
   const corona = lazy(() => points(phone ? 500 : 1700, 0, 1, 31));
+  const routePts = lazy(() => globe(43, "craters", pitch * 0.9, pitch * 0.95));
   const DOT = GLYPHS.indexOf("·");
   const DASH = GLYPHS.indexOf("-");
   const PLUS = GLYPHS.indexOf("+");
@@ -83,7 +85,7 @@ export function createSoft(env: Env): Style {
   const sistema: Scene = {
     fs: (w) => (w < 700 ? 5 : 6),
     step: FAST,
-    prepare: [sunPts, landPts, bandPts, bandRing, corona],
+    prepare: [sunPts, landPts, bandPts, bandRing, corona, routePts],
     draw(c, { t }) {
       const { orbit } = env;
       const layout = orbit.layout();
@@ -96,12 +98,12 @@ export function createSoft(env: Env): Style {
         const l = 0.14 + 0.24 * q.depth + layout.trail(a, 0.5, 2.4);
         c.put(cx + q.x, cy + q.y, Math.min(0.9, l), ICE, l > 0.4 ? DASH : DOT);
       }
-      for (const { k, id, x: qx, y: qy, scale } of layout.bodies) {
+      for (const { id, x: qx, y: qy, scale } of layout.bodies) {
         const x = cx + qx;
         const y = cy + qy;
         const B = box * scale;
         const thin = Math.min(1, 0.6 + 0.4 * scale);
-        if (k === 0) {
+        if (id === "lumina") {
           const R = B * 0.29;
           const co = corona();
           const n = Math.floor((co.length / 3) * thin);
@@ -115,8 +117,31 @@ export function createSoft(env: Env): Style {
             c.put(x + Math.cos(a) * e * R, y + Math.sin(a) * e * R, l, BLUE, level(l * 0.8, h));
           }
           c.ball({ pts: sunPts(), pal: BLUE, cx: x, cy: y, R, rot: t * 0.18, tilt: 0.2, light: SIDE_LIGHT, emissive: true, thin });
-        } else if (k === 1) {
+        } else if (id === "huerto") {
           c.ball({ pts: landPts(), pal: GREEN, cx: x, cy: y, R: B * 0.36, rot: t * 0.16, tilt: 0.35, light: SIDE_LIGHT, thin });
+        } else if (id === "rutarinde") {
+          const R = B * 0.3;
+          // El satélite pasa por delante y por detrás de la luna, sobre su camino punteado
+          const route = (a: number) => {
+            const sx = Math.cos(a) * R * 1.5;
+            const sy = Math.sin(a) * R * 0.42;
+            return [x + sx * 0.96 - sy * 0.28, y + sx * 0.28 + sy * 0.96, Math.sin(a)] as const;
+          };
+          const sat = t * 0.7;
+          const trail = (front: boolean) => {
+            for (let i = 0; i < 64; i++) {
+              const a = (i / 64) * Math.PI * 2;
+              const [px, py, z] = route(a);
+              if (z > 0 !== front) continue;
+              const near = Math.exp(-((((sat - a) % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2)) * 1.6);
+              c.put(px, py, (0.16 + 0.5 * near) * thin, MOON, near > 0.4 ? DASH : DOT);
+            }
+            const [px, py, z] = route(sat);
+            if (z > 0 === front) for (const [dx, dy] of [[0, 0], [-4, 0], [4, 0], [0, -4], [0, 4]]) c.put(px + dx, py + dy, dx || dy ? 0.55 : 0.95, ICE, dx ? DASH : dy ? BAR : PLUS);
+          };
+          trail(false);
+          c.ball({ pts: routePts(), pal: MOON, cx: x, cy: y, R, rot: t * 0.12, tilt: 0.15, light: SIDE_LIGHT, thin });
+          trail(true);
         } else {
           const R = B * 0.25;
           const ring = { pts: bandRing(), pal: AMBER, cx: x, cy: y, R, rot: t * 0.35, squash: 0.28, lean: 0.36, thin };
@@ -127,8 +152,9 @@ export function createSoft(env: Env): Style {
         // Mira discreta alrededor del planeta elegido o apuntado
         const mark = orbit.aim(id, 0.85, 0.5);
         if (!mark) continue;
-        const hx = B * AIM_X[k];
-        const hy = B * AIM_Y[k];
+        const [ax, ay] = aimOf(id);
+        const hx = B * ax;
+        const hy = B * ay;
         for (const [sx, sy] of CORNERS) {
           c.put(x + sx * hx, y + sy * hy, mark, ICE, PLUS);
           for (let j = 1; j < 4; j++) {

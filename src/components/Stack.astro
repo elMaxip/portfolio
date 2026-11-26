@@ -1,0 +1,59 @@
+---
+import StackIsland from "../islands/Stack";
+import { getProProjects, getProSite, getStack } from "../lib/content";
+import SectionTitle from "./SectionTitle.astro";
+import "../styles/stack.css";
+
+const { stack: text } = await getProSite();
+const folders = (await getStack()).map(({ id, data }) => ({ id, label: data.label, items: data.items }));
+const entries = await getProProjects();
+const projects = entries.map(({ id, data }) => ({ id, name: data.name }));
+
+// Dónde se usó cada tecnología: sale de las listas de cada proyecto
+const uses: Record<string, string[]> = {};
+for (const { id, data } of entries) {
+  for (const tech of new Set([...data.technologies, ...data.alsoUses])) (uses[tech] ??= []).push(id);
+}
+---
+
+<section id="stack" aria-labelledby="titulo-stack">
+  <div class="cabecera">
+    <SectionTitle id="titulo-stack" text={text.title} />
+    <p class="pista solo-js">{text.hint}</p>
+  </div>
+  <StackIsland
+    folders={folders}
+    projects={projects}
+    uses={uses}
+    notes={text.notes}
+    elsewhere={text.elsewhere}
+    client:idle
+  />
+</section>
+
+<style>
+  section {
+    padding: clamp(64px, 8vw, 120px) var(--margen);
+    scroll-margin-top: 24px;
+  }
+  .cabecera {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px 40px;
+    margin-bottom: 40px;
+  }
+  .pista {
+    margin: 0;
+    color: var(--secundario);
+  }
+  @media (max-width: 759px) {
+    section {
+      scroll-margin-top: 0;
+    }
+    .cabecera {
+      margin-bottom: 28px;
+    }
+  }
+</style>

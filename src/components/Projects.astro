@@ -1,12 +1,37 @@
 ---
+import type { ImageMetadata } from "astro";
 import { getImage } from "astro:assets";
 import ProjectsIsland, { type Project } from "../islands/Projects";
-import { getProjects, getSite } from "../lib/content";
+import { getProProjects, getProjects, getSite } from "../lib/content";
 import SectionTitle from "./SectionTitle.astro";
 import "../styles/projects.css";
 
-const site = await getSite();
-const entries = await getProjects();
+interface Props {
+  /** "projects": página para clientes (por defecto). "proProjects": portafolio profesional. */
+  collection?: "projects" | "proProjects";
+  text?: { title: string; hint: string };
+}
+const { collection = "projects", text = (await getSite()).projects } = Astro.props;
+
+type Link = { label: string; href: string };
+/** Lo que tienen en común las dos colecciones; lo opcional solo lo trae el profesional. */
+interface Source {
+  id: string;
+  data: {
+    name: string;
+    summary: string;
+    problem: string;
+    solution: string;
+    note?: string;
+    link?: Link;
+    links?: Link[];
+    technologies?: string[];
+    device?: "desktop" | "phone";
+    screenshotBackground: string;
+    screenshots: { label: string; alt: string; image: ImageMetadata; description?: string }[];
+  };
+}
+const entries: Source[] = collection === "proProjects" ? await getProProjects() : await getProjects();
 
 const projects: Project[] = await Promise.all(
   entries.map(async ({ id, data }) => ({
@@ -16,13 +41,15 @@ const projects: Project[] = await Promise.all(
     problem: data.problem,
     solution: data.solution,
     note: data.note,
-    link: data.link,
+    links: data.links ?? (data.link ? [data.link] : []),
+    technologies: data.technologies,
+    phone: data.device === "phone",
     background: data.screenshotBackground,
     screenshots: await Promise.all(
-      data.screenshots.map(async ({ label, alt, image }) => {
+      data.screenshots.map(async ({ label, alt, image, description }) => {
         const img = await getImage({ src: image, width: 1280, widths: [480, 768, 1024, 1280, 1600, image.width], quality: 82 });
         const full = img.srcSet.values.find((v) => v.descriptor === `${image.width}w`)?.url ?? img.src;
-        return { label, alt, full, src: img.src, srcSet: img.srcSet.attribute, width: image.width, height: image.height };
+        return { label, alt, description, full, src: img.src, srcSet: img.srcSet.attribute, width: image.width, height: image.height };
       }),
     ),
   })),
@@ -31,8 +58,8 @@ const projects: Project[] = await Promise.all(
 
 <section id="proyectos" aria-labelledby="titulo-proyectos">
   <div class="cabecera">
-    <SectionTitle id="titulo-proyectos" text={site.projects.title} />
-    <p class="pista solo-js">{site.projects.hint}</p>
+    <SectionTitle id="titulo-proyectos" text={text.title} />
+    <p class="pista solo-js">{text.hint}</p>
   </div>
   <ProjectsIsland projects={projects} client:visible={{ rootMargin: "800px" }} />
 </section>

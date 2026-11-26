@@ -12,6 +12,8 @@ export interface Screenshot {
   srcSet: string;
   width: number;
   height: number;
+  /** Lo que muestra la captura, contado más en detalle (portafolio profesional). */
+  description?: string;
 }
 
 export interface Project {
@@ -21,7 +23,11 @@ export interface Project {
   problem: string;
   solution: string;
   note?: string;
-  link?: { label: string; href: string };
+  links: { label: string; href: string }[];
+  /** Con qué está hecho (portafolio profesional). */
+  technologies?: string[];
+  /** Capturas de celular, verticales. */
+  phone?: boolean;
   background: string;
   screenshots: Screenshot[];
 }
@@ -35,8 +41,8 @@ const SIZES = "(min-width: 1060px) calc(100vw - 540px), calc(100vw - 76px)";
 /** Su contenido lo escribe el motor, quizá antes de que React llegue: React no lo toca. */
 const OWNED_BY_ENGINE = { suppressHydrationWarning: true, dangerouslySetInnerHTML: { __html: "" } };
 
-/** Deja ver el viaje del planeta al frente antes de bajar. */
-const TRAVEL_MS = 900;
+/** Un instante para que se note que el planeta respondió al clic antes de bajar. */
+const TRAVEL_MS = 150;
 
 /**
  * Selección de planeta, ventana y capturas. El movimiento es del motor (engine/orbit.ts):
@@ -120,7 +126,13 @@ export default function Projects({ projects }: Props) {
 
   return (
     <>
-      <div className="orbita solo-js" role="group" aria-label="Elegir proyecto" data-elegido={selected}>
+      <div
+        className="orbita solo-js"
+        role="group"
+        aria-label="Elegir proyecto"
+        data-elegido={selected}
+        data-cantidad={projects.length}
+      >
         {/* Trazos detrás de los planetas: engine/orbitplate.ts */}
         <svg className="lamina" data-trazos="" aria-hidden="true" {...OWNED_BY_ENGINE} />
         <canvas data-escena="sistema" aria-hidden="true" />
@@ -176,6 +188,7 @@ export default function Projects({ projects }: Props) {
                   <div
                     className="capturas"
                     data-mira=""
+                    data-telefono={project.phone || undefined}
                     style={{ background: project.background }}
                     onTouchStart={onTouchStart}
                     onTouchEnd={(e) => onTouchEnd(e, project)}
@@ -228,6 +241,15 @@ export default function Projects({ projects }: Props) {
                     onChange={(i) => show(project.id, i)}
                     name={project.name}
                   />
+                  {project.screenshots.map(
+                    (s, i) =>
+                      s.description && (
+                        <p className="nota-captura" key={s.label} data-activa={i === shot || undefined}>
+                          <span className="sin-js">{s.label}: </span>
+                          {s.description}
+                        </p>
+                      ),
+                  )}
                 </div>
                 <div className="proyecto-textos">
                   <p className="sin-js t-resumen">{project.summary}</p>
@@ -239,11 +261,38 @@ export default function Projects({ projects }: Props) {
                     <h4 className="t-punto">Lo que construí</h4>
                     <p>{project.solution}</p>
                   </div>
+                  {project.technologies && (
+                    <div>
+                      <h4 className="t-punto">Hecho con</h4>
+                      <ul className="tecnicas" aria-label={`Tecnologías de ${project.name}`}>
+                        {/* La barra va pegada a la palabra anterior: ninguna línea empieza con "/" */}
+                        {project.technologies.map((t, i, all) => (
+                          <li key={t}>
+                            {t}
+                            {i < all.length - 1 && (
+                              <span className="tecnicas-barra" aria-hidden="true">
+                                /
+                              </span>
+                            )}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                   {project.note && <p className="nota">{project.note}</p>}
-                  {project.link && (
-                    <a className="nav sub" href={project.link.href}>
-                      {project.link.label}
+                  {project.links.length === 1 && (
+                    <a className="nav sub" href={project.links[0].href}>
+                      {project.links[0].label}
                     </a>
+                  )}
+                  {project.links.length > 1 && (
+                    <div className="proyecto-enlaces">
+                      {project.links.map((l) => (
+                        <a className="nav sub" href={l.href} key={l.href}>
+                          {l.label}
+                        </a>
+                      ))}
+                    </div>
                   )}
                   <ProjectFigure id={project.id} />
                 </div>

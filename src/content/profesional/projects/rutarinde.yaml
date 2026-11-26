@@ -1,0 +1,28 @@
+order: 4
+name: RutaRinde
+summary: El $/km real de cada viaje
+problem: Mi hermano maneja con Uber, Didi y Cabify y no alcanzaba a calcular si un viaje le convenía.
+solution: Una app Android que lee la oferta con OCR y muestra el $/km real en una ventana flotante, en las tres apps a la vez.
+note: En desarrollo, versión 0.7.
+technologies: [Kotlin, Jetpack Compose, ML Kit, MediaProjection, Room, Coroutines]
+# También cuentan en el Stack
+alsoUses: [Git, Figma]
+device: phone
+screenshotBackground: "#101419"
+screenshots:
+  - label: Monitoreo
+    alt: Ventanas flotantes de RutaRinde sobre la app de transporte, con el $/km del viaje, la tarifa, la distancia y la duración
+    image: ../../../assets/projects/rutarinde/aplicaciones-activas.jpg
+    description: "La ventana muestra el $/km neto, que incluye los kilómetros para ir a buscar al pasajero. Un problema poco obvio: la captura incluía las propias ventanas de RutaRinde y sus números se leían como datos del viaje. Lo resolví tapando esas zonas antes del OCR."
+  - label: Área de escaneo
+    alt: Rectángulo que marca la zona de la pantalla donde aparece la oferta del viaje
+    image: ../../../assets/projects/rutarinde/seleccion-de-area.jpg
+    description: "Solo el recorte elegido pasa por ML Kit, que corre en el teléfono sin enviar nada a un servidor. Como el OCR confunde letras con números (l→1, O→0), los parsers toleran esas confusiones y validan el resultado: si un viaje implica ir a más de 140 km/h, se perdió el separador decimal."
+  - label: Aplicaciones
+    alt: Lista para elegir qué aplicaciones de transporte se monitorean y el modo de ventana
+    image: ../../../assets/projects/rutarinde/aplicaciones.jpg
+    description: Se eligen las apps a monitorear y si hay una ventana por app o una sola que cambia según la app en primer plano. Uber, Didi y Cabify muestran la oferta con formatos distintos, así que cada una tiene su propio extractor con pruebas unitarias.
+  - label: Preferencias
+    alt: Ajustes generales de RutaRinde con la frecuencia de escaneo y los umbrales de $/km
+    image: ../../../assets/projects/rutarinde/config-general.jpg
+    description: Cada cuántos segundos se escanea la pantalla y los umbrales que deciden el color de la ventana. Escanear más seguido gasta más batería; para compensarlo, cada imagen se compara por hash con la anterior y, si no cambió, no pasa por el OCR.

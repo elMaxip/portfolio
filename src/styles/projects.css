@@ -46,6 +46,21 @@
   --rotulo: 84%;
   transform: translate(33cqw, -5cqw) scale(0.62);
 }
+/* Con cuatro planetas (portafolio profesional) son algo más chicos */
+.orbita[data-cantidad="4"] .planeta {
+  --lado: clamp(132px, 26vw, 390px);
+}
+.orbita[data-cantidad="4"] .planeta[data-planeta="huerto"] {
+  transform: translate(-40cqw, 1cqw) scale(0.74);
+}
+.orbita[data-cantidad="4"] .planeta[data-planeta="horario"] {
+  transform: translate(0, -9cqw) scale(0.48);
+}
+.planeta[data-planeta="rutarinde"] {
+  --brillo: var(--planeta-rutarinde);
+  --rotulo: 87%;
+  transform: translate(40cqw, -1cqw) scale(0.74);
+}
 .rotulo {
   position: absolute;
   left: 50%;
@@ -261,4 +276,56 @@ html:not([data-js]) .captura figcaption {
   margin-top: 8px;
   color: var(--secundario);
   font-size: 1rem;
+}
+
+/* --- Lo que agrega el portafolio profesional --- */
+.nota-captura {
+  max-width: 68ch;
+  margin: 0;
+  color: var(--secundario-claro);
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  text-wrap: pretty;
+}
+[data-js] .nota-captura:not([data-activa]) {
+  display: none;
+}
+html:not([data-js]) .nota-captura {
+  margin-top: 4px;
+}
+.tecnicas {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--f-mono);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+.tecnicas li {
+  white-space: nowrap;
+}
+.tecnicas-barra {
+  padding-inline: 0.5em;
+  color: var(--borde);
+}
+.proyecto-textos > .proyecto-enlaces {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0 12px;
+  margin-inline-start: -10px;
+}
+.proyecto-enlaces .nav {
+  margin-inline-start: 0;
+}
+
+/* Capturas de celular: verticales, enteras y al centro */
+.capturas[data-telefono] .captura img {
+  width: auto;
+  max-width: 100%;
+  height: clamp(380px, 46vw, 620px);
+  margin-inline: auto;
+  aspect-ratio: auto;
+  object-fit: contain;
 }

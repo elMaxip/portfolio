@@ -11,6 +11,6 @@ export const formatPrice = (value: number): string => clp.format(value);
 export const whatsappUrl = (number: string, message?: string): string =>
   `https://wa.me/${number}${message ? `?text=${encodeURIComponent(message)}` : ""}`;
 
-/** Barra de avance de "Así trabajo": [######............] */
-export const progressBar = (filled: number, total = 18): string =>
-  `[${"#".repeat(filled)}${".".repeat(total - filled)}]`;
+/** Tramo de la línea de tiempo de "Así trabajo": (3, 14) → [...###########....] */
+export const timelineBar = (start: number, end: number, total = 18): string =>
+  `[${".".repeat(start)}${"#".repeat(end - start)}${".".repeat(total - end)}]`;

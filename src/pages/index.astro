@@ -1,31 +1,65 @@
 ---
 import About from "../components/About.astro";
 import Closing from "../components/Closing.astro";
-import Nav from "../components/Nav.astro";
 import Hero from "../components/Hero.astro";
-import Process from "../components/Process.astro";
+import Nav from "../components/Nav.astro";
 import Projects from "../components/Projects.astro";
-import Services from "../components/Services.astro";
+import Stack from "../components/Stack.astro";
+import ContactForm from "../islands/ContactForm";
 import Layout from "../layouts/Layout.astro";
-import { getSite } from "../lib/content";
+import { getProSite, getSite } from "../lib/content";
 import "../styles/plates.css";
 import "../styles/lightbox.css";
+import "../styles/contact.css";
 
-const site = await getSite();
+// Portafolio profesional. El de clientes está en /servicios (servicios.astro).
+const pro = await getProSite();
+const { footer } = await getSite();
+const { about, contact } = pro;
+const linkedin = footer.links.find((l) => l.href.includes("linkedin"));
 ---
 
-<Layout title={site.title} description={site.description}>
+<Layout title={pro.title} description={pro.description}>
   <a class="salto" href="#proyectos">Ir a los proyectos</a>
-  <Nav />
-  <Hero />
+  <Nav
+    links={[
+      { href: "#inicio", label: "Inicio" },
+      { href: "#sobre-mi", label: "Sobre mí" },
+      { href: "#proyectos", label: "Proyectos" },
+      { href: "#stack", label: "Stack" },
+      { href: "#contacto", label: "Contacto" },
+    ]}
+  />
+  <Hero tagline={pro.hero.tagline} cta={pro.hero.cta} explore={pro.hero.explore} />
   <main>
-    <About />
-    <Projects />
-    <Process />
-    <Services />
+    <About about={about}>
+      <div class="enlaces">
+        {about.links.map((l) => <a class="nav sub" href={l.href}>{l.label}</a>)}
+        <a class="nav sub" href={about.cv.href} download={about.cv.file}>{about.cv.label}</a>
+      </div>
+    </About>
+    <Projects collection="proProjects" text={pro.projects} />
+    <Stack />
   </main>
-  <Closing />
+  <Closing closing={contact}>
+    <ContactForm emailjs={contact.emailjs} client:idle />
+    <p class="contacto-sin-js" data-bloque="1">
+      Sin JavaScript el formulario no funciona: escríbeme por <a class="nav sub" href={linkedin?.href}>LinkedIn</a>.
+    </p>
+  </Closing>
 </Layout>
+
+<style>
+  .enlaces {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 12px;
+    margin: -12px 0 0 -10px;
+  }
+  .enlaces .nav {
+    font-weight: 700;
+  }
+</style>
 
 <script>
   import "../engine/start";

@@ -1,6 +1,6 @@
 import { drawColony, prepareColony } from "../colony";
 import { hash, lazy, makeStars, noise, norm, points } from "../math";
-import { AIM_X, AIM_Y, CORNERS } from "../orbit";
+import { aimOf, CORNERS } from "../orbit";
 import { rockPoints } from "../rock";
 import { AMBER, BLUE, FAST, GREEN, ICE, MOON, SLOW, type Env, type Painter, type SceneKey, type Style, type View } from "../types";
 import { AsciiCanvas, forgetAtlases } from "./AsciiCanvas";
@@ -37,7 +37,7 @@ export function createAscii(env: Env): Style {
       const R = small ? w * 0.275 : Math.min(w * 0.215, h * 0.335);
       const cx = small ? w * 0.5 : w * 0.705;
       const cy = small ? h * 0.335 : h * 0.53;
-      const form = env.reduce ? 1 : Math.min(1, Math.max(0, t - t0) / (t0 ? 1.4 : 2.6));
+      const form = env.reduce ? 1 : Math.min(1, Math.max(0, t - t0) / (t0 ? 1 : 1.7));
       c.stars(stars(), h, 1);
       const ring = {
         cx, cy, R,
@@ -65,16 +65,18 @@ export function createAscii(env: Env): Style {
     },
   };
 
-  // Proyectos: Lumina es un sol, Huerto Hogar tiene continentes y MiHorario, bandas y anillo
+  // Proyectos: Lumina es un sol, Huerto Hogar tiene continentes, MiHorario, bandas y anillo,
+  // y RutaRinde es una luna con cráteres y un satélite que la recorre
   const CORONA = 900;
   const sunTex = lazy(() => surface(3, "sun"));
   const landTex = lazy(() => surface(21, "land"));
   const bandTex = lazy(() => surface(9, "bands"));
   const corona = lazy(() => points(CORONA, 0, 1, 31));
+  const routeTex = lazy(() => surface(43, "craters"));
   const sistema: Scene = {
     fs: (w) => (w < 700 ? 7 : 10),
     step: FAST,
-    prepare: [sunTex, landTex, bandTex, corona],
+    prepare: [sunTex, landTex, bandTex, corona, routeTex],
     draw(c, { t }) {
       const { orbit } = env;
       const layout = orbit.layout();
@@ -88,11 +90,11 @@ export function createAscii(env: Env): Style {
         const l = 0.16 + 0.26 * q.depth + layout.trail(a, 0.55, 2.6);
         c.put(cx + q.x, cy + q.y, Math.min(1, l), ICE, l > 0.62 ? "=" : l > 0.4 ? "-" : ".");
       }
-      for (const { k, id, x: qx, y: qy, scale } of layout.bodies) {
+      for (const { id, x: qx, y: qy, scale } of layout.bodies) {
         const x = cx + qx;
         const y = cy + qy;
         const B = box * scale;
-        if (k === 0) {
+        if (id === "lumina") {
           const R = B * 0.29;
           const co = corona();
           for (let i = 0; i < CORONA; i++) {
@@ -102,8 +104,31 @@ export function createAscii(env: Env): Style {
             c.put(x + Math.cos(a) * e * R, y + Math.sin(a) * e * R, 0.62 * Math.max(0.1, 1 - (e - 1.06) * 2.1), BLUE);
           }
           c.ball({ tex: sunTex(), pal: BLUE, cx: x, cy: y, R, rot: t * 0.25, tilt: 0.2, light: SIDE_LIGHT, emissive: true });
-        } else if (k === 1) {
+        } else if (id === "huerto") {
           c.ball({ tex: landTex(), pal: GREEN, cx: x, cy: y, R: B * 0.36, rot: t * 0.22, tilt: 0.35, light: SIDE_LIGHT });
+        } else if (id === "rutarinde") {
+          const R = B * 0.3;
+          // El satélite pasa por delante y por detrás de la luna, sobre su camino punteado
+          const route = (a: number) => {
+            const sx = Math.cos(a) * R * 1.5;
+            const sy = Math.sin(a) * R * 0.42;
+            return [x + sx * 0.96 - sy * 0.28, y + sx * 0.28 + sy * 0.96, Math.sin(a)] as const;
+          };
+          const sat = t * 0.7;
+          const trail = (front: boolean) => {
+            for (let i = 0; i < 48; i++) {
+              const a = (i / 48) * Math.PI * 2;
+              const [px, py, z] = route(a);
+              if (z > 0 !== front) continue;
+              const near = Math.exp(-((((sat - a) % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2)) * 1.6);
+              c.put(px, py, 0.2 + 0.5 * near, MOON, near > 0.4 ? "-" : ".");
+            }
+            const [px, py, z] = route(sat);
+            if (z > 0 === front) c.put(px, py, 1, ICE, "#");
+          };
+          trail(false);
+          c.ball({ tex: routeTex(), pal: MOON, cx: x, cy: y, R, rot: t * 0.16, tilt: 0.15, light: SIDE_LIGHT });
+          trail(true);
         } else {
           const R = B * 0.25;
           const ring = { pal: AMBER, cx: x, cy: y, R, rot: t * 1.2, squash: 0.28, lean: 0.36, inner: 1.35, outer: 1.95 };
@@ -115,8 +140,8 @@ export function createAscii(env: Env): Style {
         const mark = orbit.aim(id, 1, 0.62);
         if (!mark) continue;
         for (const [sx, sy] of CORNERS) {
-          const X = x + sx * B * AIM_X[k];
-          const Y = y + sy * B * AIM_Y[k];
+          const X = x + sx * B * aimOf(id)[0];
+          const Y = y + sy * B * aimOf(id)[1];
           c.put(X, Y, mark, ICE, "+");
           c.put(X - sx * kx, Y, mark - 0.01, ICE, "-");
           c.put(X - sx * 2 * kx, Y, mark - 0.01, ICE, "-");

@@ -2,14 +2,20 @@
   order: 1
   title: Me cuentas
   text: Conversamos por WhatsApp sobre tu negocio y lo que hoy te quita tiempo.
-  progress: 6
+  start: 0
+  end: 3
+  duration: días 1–2
 - id: faseB
   order: 2
   title: Le doy forma
   text: Recibes un plan con precio y fecha, y vas viendo los avances.
-  progress: 12
+  start: 3
+  end: 14
+  duration: semanas 1–3
 - id: faseC
   order: 3
   title: Lo lanzamos
   text: Queda funcionando en tu negocio y te enseño a usarlo.
-  progress: 18
+  start: 14
+  end: 18
+  duration: última semana

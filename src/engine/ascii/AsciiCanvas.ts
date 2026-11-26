@@ -183,7 +183,7 @@ export class AsciiCanvas {
 
   ball(p: BallOptions): void {
     const { cx, cy, R, rot, tilt, tex, light, pal, emissive = false, form = 1, mouse } = p;
-    const { kx, ky, cols, w, h } = this;
+    const { kx, ky, cols } = this;
     const cr = Math.cos(rot);
     const sr = Math.sin(rot);
     const ct = Math.cos(tilt);
@@ -226,8 +226,11 @@ export class AsciiCanvas {
         let g = 0;
         let loose = false;
         if (f < 0.999) {
-          const ox = hash[(i * 13 + 5) & 4095] * w;
-          const oy = hash[(i * 29 + 11) & 4095] * h;
+          // Parten cerca del planeta: así no cruzan el texto que va al lado
+          const oa = hash[(i * 13 + 5) & 4095] * Math.PI * 2;
+          const or = Math.sqrt(hash[(i * 29 + 11) & 4095]) * R * 1.7;
+          const ox = cx + Math.cos(oa) * or;
+          const oy = cy + Math.sin(oa) * or;
           qx = ox + (px - ox) * f;
           qy = oy + (py - oy) * f;
           l = Math.max(l, 0.5 * (1 - f));

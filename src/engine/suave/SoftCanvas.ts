@@ -297,8 +297,11 @@ export class SoftCanvas {
       let g = level(l * 0.92, h);
       let c = 0.2 + 0.62 * l;
       if (f < 0.999) {
-        const ox = hash[(i * 13 + 5) & 4095] * this.w;
-        const oy = hash[(i * 29 + 11) & 4095] * this.h;
+        // Parten cerca del planeta: así no cruzan el texto que va al lado
+        const oa = hash[(i * 13 + 5) & 4095] * Math.PI * 2;
+        const or = Math.sqrt(hash[(i * 29 + 11) & 4095]) * R * 1.7;
+        const ox = cx + Math.cos(oa) * or;
+        const oy = cy + Math.sin(oa) * or;
         px = ox + (px - ox) * f;
         py = oy + (py - oy) * f;
         c = Math.max(c, 0.45 * (1 - f));

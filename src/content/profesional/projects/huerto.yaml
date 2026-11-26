@@ -1,0 +1,30 @@
+order: 2
+name: Huerto Hogar
+summary: Tienda de productos del campo
+problem: Una tienda de productos del campo necesitaba vender en línea con un catálogo fácil de editar.
+solution: Una tienda en React con micro-frontends y un backend NestJS de microservicios con JWT, más un panel para cambiar precios, stock y fotos.
+note: "Proyecto académico: la tienda y los datos de las capturas son ficticios."
+technologies: [Web Components, React, TypeScript, Module Federation, TanStack Query, NestJS, PostgreSQL, Docker]
+# NestJS corre en Node: en el Stack, Node también aparece usado aquí
+alsoUses: [Node, HTML, CSS, Git]
+links:
+  - label: Ver el código
+    href: https://github.com/elMaxip/huerto-hogar-react-mfe
+screenshotBackground: "#f4f4f4"
+screenshots:
+  - label: Catálogo
+    alt: Catálogo de Huerto Hogar con frutas, miel y verduras
+    image: ../../../assets/projects/huertohogar/catalogo.png
+    description: Los productos aparecen al instante desde una caché en IndexedDB. En segundo plano, TanStack Query pide solo el id y la fecha de modificación de cada producto y descarga únicamente los que cambiaron. Esa fecha la mantiene un trigger de PostgreSQL, así que también cambia si alguien edita un producto directo en SQL.
+  - label: Carrito
+    alt: Carrito de compras de Huerto Hogar
+    image: ../../../assets/projects/huertohogar/carrito.png
+    description: Tienda, autenticación, carrito y administración son cuatro micro-frontends que se despliegan por separado. El host los carga con Module Federation y comparte una sola copia de React y React Router; si un remoto se cae, solo esa sección muestra un error.
+  - label: Inicio de sesión
+    alt: Formulario para iniciar sesión en Huerto Hogar
+    image: ../../../assets/projects/huertohogar/login.png
+    description: "Autenticación, usuarios y productos son microservicios que se hablan por TCP, cada uno con su base de datos, detrás de un API Gateway. El refresh token rota en cada uso y solo se guarda su hash: si alguien reutiliza uno viejo, se revoca la sesión completa."
+  - label: Administración
+    alt: Panel para administrar los productos de Huerto Hogar
+    image: ../../../assets/projects/huertohogar/admin-productos.png
+    description: "Solo para administradores: el gateway valida el JWT y el rol en cada petición. El código de cada producto se genera por categoría dentro de una transacción con bloqueo, para que dos creaciones simultáneas no obtengan el mismo número."

@@ -6,14 +6,20 @@ import "../styles/nav.css";
  * En computador va en el margen derecho; en celular se abre desde un dial.
  * El movimiento es de engine/nav.ts.
  */
-const links = [
-  { href: "#inicio", label: "Inicio" },
-  { href: "#sobre-mi", label: "Sobre mí" },
-  { href: "#proyectos", label: "Proyectos" },
-  { href: "#proceso", label: "Así trabajo" },
-  { href: "#precios", label: "Precios" },
-  { href: "#contacto", label: "Contacto" },
-];
+interface Props {
+  /** Sin props, las secciones de la página para clientes. */
+  links?: { href: string; label: string }[];
+}
+const {
+  links = [
+    { href: "#inicio", label: "Inicio" },
+    { href: "#sobre-mi", label: "Sobre mí" },
+    { href: "#proyectos", label: "Proyectos" },
+    { href: "#proceso", label: "Así trabajo" },
+    { href: "#precios", label: "Precios" },
+    { href: "#contacto", label: "Contacto" },
+  ],
+} = Astro.props;
 const ticks = Array.from({ length: 36 }, (_, i) => i * 10);
 ---
 

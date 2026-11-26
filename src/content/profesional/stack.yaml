@@ -1,0 +1,25 @@
+# Árbol del Stack, en orden. La primera carpeta es la que se ve al llegar.
+- id: mis_especialidades
+  order: 1
+  label: mis_especialidades/
+  items: [React, TypeScript, Node, NestJS, PostgreSQL]
+- id: frontend
+  order: 2
+  label: frontend/
+  items: [React, Angular, Astro]
+- id: backend
+  order: 3
+  label: backend/
+  items: [Spring Boot, NestJS]
+- id: lenguajes
+  order: 4
+  label: lenguajes/
+  items: [HTML, CSS, TypeScript, JavaScript, Java, Go, Lua, Kotlin]
+- id: herramientas
+  order: 5
+  label: herramientas/
+  items: [Claude, Git, Figma, Docker]
+- id: bd
+  order: 6
+  label: bases_de_datos/
+  items: [PostgreSQL]

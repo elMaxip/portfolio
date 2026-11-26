@@ -29,6 +29,15 @@ export default function ProjectFigure({ id }: { id: string }) {
               <path d="M0 -52V-40M0 40V52" strokeDasharray="2 2" />
             </g>
           )}
+          {id === "rutarinde" && (
+            <g transform="rotate(14)">
+              <circle r="30" />
+              <circle cx="-10" cy="-9" r="7" strokeDasharray="2 2" />
+              <circle cx="11" cy="9" r="4.5" />
+              <ellipse rx="50" ry="14" strokeDasharray="3 3" />
+              <circle cx="50" r="3.5" />
+            </g>
+          )}
           {id === "horario" && (
             <g transform="rotate(-20)">
               <circle r="27" />

@@ -1,0 +1,32 @@
+order: 3
+name: MiHorario
+summary: Horarios armados desde un Excel
+problem: Armar mi horario en Duoc UC era probar combinaciones a mano en una planilla de miles de filas.
+solution: Subes la planilla oficial, eliges ramos y horas, y genera todos los horarios posibles sin topes.
+technologies: [React, TypeScript, Vite, Jotai, SheetJS, Web Workers, Vitest]
+links:
+  - label: Visitar MiHorario
+    href: https://mihorario.vercel.app/
+  - label: Ver el código
+    href: https://github.com/elMaxip/MiHorario
+# También cuentan en el Stack
+alsoUses: [HTML, CSS, Git, Figma]
+screenshotBackground: "#ffffff"
+# horarios.png se tomó con el archivo de ejemplo sin los nombres de los docentes: no reemplazarla por una con nombres reales.
+screenshots:
+  - label: Subir archivo
+    alt: Inicio de MiHorario, donde se sube el archivo Excel
+    image: ../../../assets/projects/mihorario/home.png
+    description: "El Excel de oferta académica se arrastra a la página o se elige con un botón accesible por teclado. SheetJS lo lee en el navegador: no hay backend ni costos de servidor, y los datos nunca salen del equipo."
+  - label: Planificador
+    alt: Planificador de MiHorario con asignaturas elegidas, cuántas secciones caben y la disponibilidad de lunes a sábado
+    image: ../../../assets/projects/mihorario/planificador.png
+    description: La disponibilidad se marca de lunes a sábado arrastrando los bordes de cada franja, con selects como alternativa para teclado y celular. Junto a cada ramo se ve en vivo cuántas secciones caben en ese rango.
+  - label: Sugerencia
+    alt: Asignatura que no cabe en las horas elegidas, con la sección más cercana y el botón Ampliar horas
+    image: ../../../assets/projects/mihorario/sugerencia.png
+    description: "Si ninguna sección de un ramo cabe, se busca la que exige ampliar menos la disponibilidad, prefiriendo alargar los días activos antes que encender uno apagado. «Ampliar horas» aplica ese cambio en un clic."
+  - label: Horarios
+    alt: Horarios generados por MiHorario, con la semana del primero de 29 y las secciones para inscribir
+    image: ../../../assets/projects/mihorario/horarios.png
+    description: "La búsqueda corre en un Web Worker con backtracking sobre una pila explícita: se pausa y se retoma donde quedó, y muestra el primer horario apenas lo encuentra. Una matriz de choques precalculada hace que revisar un tope sea una sola consulta. Se ordenan por ventanas, días u hora de salida, y se copian o descargan como PNG."

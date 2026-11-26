@@ -3,6 +3,18 @@ import { getSite } from "../lib/content";
 import Header from "./Header.astro";
 const site = await getSite();
 
+interface Props {
+  /** Sin props, los textos de la página para clientes (site.yaml). */
+  tagline?: string;
+  cta?: { label: string; href: string };
+  explore?: string;
+}
+const {
+  tagline = site.hero.tagline,
+  cta = { label: site.whatsapp.label, href: site.whatsappHref },
+  explore = site.hero.explore,
+} = Astro.props;
+
 // Cada letra del nombre entra por separado (etapa 3) y reacciona al cursor
 const words = [
   { letters: [...site.firstName], start: 100 },
@@ -26,12 +38,12 @@ const words = [
       }
     </h1>
     <p class="t-lema" data-bloque="2">
-      <span class="oculto">{site.hero.tagline}</span>
-      <span aria-hidden="true"><span data-decrypt="1600">{site.hero.tagline}</span><span class="cursor"></span></span>
+      <span class="oculto">{tagline}</span>
+      <span aria-hidden="true"><span data-decrypt="1600">{tagline}</span><span class="cursor"></span></span>
     </p>
     <div class="acciones sube">
-      <a class="cta" data-bloque="1" href={site.whatsappHref}>{site.whatsapp.label}</a>
-      <a class="nav explorar" data-bloque="1" href="#proyectos">{site.hero.explore}</a>
+      <a class="cta" data-bloque="1" href={cta.href}>{cta.label}</a>
+      <a class="nav explorar" data-bloque="1" href="#proyectos">{explore}</a>
     </div>
   </section>
 </div>

@@ -1,7 +1,11 @@
 ---
 import { getSite } from "../lib/content";
 import SectionTitle from "./SectionTitle.astro";
-const { about } = await getSite();
+interface Props {
+  /** Sin props, el Sobre mí de la página para clientes. Lo que va en el slot queda bajo el texto. */
+  about?: { title: string; highlights: string[]; text: string };
+}
+const { about = (await getSite()).about } = Astro.props;
 ---
 
 <section id="sobre-mi" aria-labelledby="titulo-sobre-mi">
@@ -21,6 +25,7 @@ const { about } = await getSite();
     <SectionTitle id="titulo-sobre-mi" text={about.title} size="t-sub" />
     <p class="destacado t-grande">{about.highlights.map((h) => <><span class="luz">{h}</span>{" "}</>)}</p>
     <p class="detalle">{about.text}</p>
+    <slot />
   </div>
 </section>
 

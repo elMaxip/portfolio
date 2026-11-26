@@ -1,0 +1,54 @@
+# Textos del portafolio profesional (la raíz del sitio). Una sola entrada: "main".
+# El nombre, el pie y sus enlaces son los de ../site.yaml.
+main:
+  title: "Máximo Soto: desarrollador full stack en Chile"
+  description: Desarrollador full stack junior. Construyo aplicaciones web de punta a punta, de la interfaz a la base de datos.
+  hero:
+    tagline: Desarrollador full stack. Hice un punto de venta para almacenes, un generador de horarios desde Excel y una app Android que calcula cuánto deja cada viaje.
+    cta:
+      label: Escríbeme
+      href: "#contacto"
+    explore: Ver proyectos
+  about:
+    title: Sobre mí
+    highlights:
+      - Programo para resolver
+      - "problemas que tengo cerca:"
+      - un generador de horarios
+      - para mi propia inscripción,
+      - una app que le dice a mi hermano
+      - qué viajes le convienen
+      - y un monitor de precios.
+    text: "Me gusta entender qué hay debajo de lo que uso: por eso escribí una API en Go sin frameworks ni ORM, solo para ver cómo funciona un backend por dentro. Esa base es la que me permite trabajar bien con agentes de IA: el monitor de precios lo construí dirigiéndolos, evaluando y corrigiendo lo que generaban. Trabajo en web (React, Angular, Astro), backend (NestJS, Spring Boot, Go) y Android (Kotlin)."
+    links:
+      - label: GitHub
+        href: https://github.com/elMaxip
+      - label: LinkedIn
+        href: https://www.linkedin.com/in/maxisotogz/
+    cv:
+      label: Descargar CV
+      href: /maximo-soto-cv.pdf
+      # Nombre con el que se guarda
+      file: MáximoSotoCurrículumVitae.pdf
+  projects:
+    title: Proyectos
+    hint: Elige un planeta para aterrizar en él, o arrastra la órbita.
+  stack:
+    title: Stack
+    hint: Elige una carpeta para ver en qué proyectos usé cada tecnología.
+    # Tecnologías que no aparecen en ningún proyecto: dónde las usé
+    notes:
+      Go: Una API sin frameworks ni ORM, para ver cómo funciona un backend por dentro.
+      Claude: Con agentes de IA construí un monitor de precios, evaluando y corrigiendo lo que generaban.
+      Astro: Este portafolio.
+    # Las que no tienen nota
+    elsewhere: Fuera de estos proyectos.
+  contact:
+    title: ¿Hablamos?
+    text: Si tienes una vacante o un proyecto en mente, escríbeme y te respondo a tu correo.
+    # Claves públicas de EmailJS: están hechas para ir en el navegador.
+    # Los dominios permitidos y el límite de envíos se controlan en su panel.
+    emailjs:
+      serviceId: service_jcf4w6q
+      templateId: template_sptoxhu
+      publicKey: hWJukXS1njgxxVBZ4

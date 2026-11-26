@@ -17,3 +17,12 @@ export async function getSite() {
 export const getProjects = async () => (await getCollection("projects")).sort(byOrder);
 export const getSteps = async () => (await getCollection("steps")).sort(byOrder);
 export const getServices = async () => (await getCollection("services")).sort(byOrder);
+
+/* Portafolio profesional */
+export async function getProSite() {
+  const entry = await getEntry("proSite", "main");
+  if (!entry) throw new Error("Falta la entrada main en src/content/profesional/site.yaml");
+  return entry.data;
+}
+export const getProProjects = async () => (await getCollection("proProjects")).sort(byOrder);
+export const getStack = async () => (await getCollection("stack")).sort(byOrder);

@@ -2,16 +2,30 @@
 import { getSite } from "../lib/content";
 import Footer from "./Footer.astro";
 const site = await getSite();
+
+interface Props {
+  /** Sin props, el cierre de la página para clientes. El slot reemplaza el botón de WhatsApp. */
+  closing?: { title: string; text: string };
+}
+const { closing = site.closing } = Astro.props;
 ---
 
 <div class="cierre" id="contacto">
   <canvas class="escena" data-escena="horizonte" aria-hidden="true"></canvas>
   <section aria-labelledby="titulo-cierre">
-    <h2 id="titulo-cierre" class="t-final" aria-label={site.closing.title} data-bloque="1">
-      <span aria-hidden="true" data-decrypt="1">{site.closing.title}</span>
+    <h2 id="titulo-cierre" class="t-final" aria-label={closing.title} data-bloque="1">
+      <span aria-hidden="true" data-decrypt="1">{closing.title}</span>
     </h2>
-    <p data-bloque="1">{site.closing.text}</p>
-    <a class="cta" data-bloque="1" href={site.whatsappHref}>{site.whatsapp.label}</a>
+    <p data-bloque="1">{closing.text}</p>
+    {
+      Astro.slots.has("default") ? (
+        <slot />
+      ) : (
+        <a class="cta" data-bloque="1" href={site.whatsappHref}>
+          {site.whatsapp.label}
+        </a>
+      )
+    }
   </section>
   <Footer />
 </div>
@@ -26,6 +40,11 @@ const site = await getSite();
     min-height: 820px;
     overflow: hidden;
     background: var(--fondo);
+  }
+  /* Con formulario, al saltar a #contacto se omite casi todo el relleno de arriba
+     para que el formulario entre completo en la pantalla */
+  .cierre:has(.formulario) {
+    scroll-margin-top: calc(16px - clamp(72px, 8vw, 120px));
   }
   section {
     position: relative;
@@ -58,3 +77,19 @@ const site = await getSite();
     }
   }
 </style>
+
+<script>
+  // Si el título y el formulario no caben juntos en la pantalla (celular, notebook bajo),
+  // el salto a #contacto deja el formulario completo a la vista en vez del título.
+  document.addEventListener("click", (e) => {
+    const link = (e.target as Element | null)?.closest?.('a[href="#contacto"]');
+    const form = document.querySelector<HTMLElement>("#contacto .formulario");
+    const title = document.getElementById("titulo-cierre");
+    if (!link || !form || !title) return;
+    const need = form.getBoundingClientRect().bottom - title.getBoundingClientRect().top + 32;
+    if (need <= innerHeight) return;
+    e.preventDefault();
+    history.pushState(null, "", "#contacto");
+    form.scrollIntoView({ block: "start" });
+  });
+</script>

@@ -1,0 +1,152 @@
+/* Formulario de contacto del portafolio profesional (ContactForm.tsx) */
+
+.formulario {
+  --error: #ffb38a;
+  width: 100%;
+  max-width: 760px;
+  box-sizing: border-box;
+  /* Cuando el salto a #contacto llega directo al formulario (Closing.astro) */
+  scroll-margin-top: 16px;
+  border: 2px solid var(--borde-fuerte);
+  background: var(--ventana);
+  text-align: left;
+}
+.formulario-barra {
+  padding: 8px;
+  border-bottom: 2px dashed var(--borde-fuerte);
+}
+.formulario-barra p {
+  width: fit-content;
+  margin: 0;
+  padding: 4px 14px;
+  background: var(--texto);
+  color: var(--fondo);
+}
+.formulario-cuerpo {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  padding: clamp(18px, 2.6vw, 32px);
+}
+.campo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 14px;
+}
+.campo-ruta {
+  flex: none;
+  color: var(--acento);
+  font-family: var(--f-mono);
+  font-size: 1.0625rem;
+}
+.campo-entrada {
+  flex: 1 1 220px;
+  min-width: 0;
+  min-height: 44px;
+  box-sizing: border-box;
+  padding: 6px 2px;
+  border: 0;
+  border-bottom: 1px dashed var(--borde);
+  border-radius: 0;
+  background: transparent;
+  color: var(--texto);
+  font-family: var(--f-mono);
+  font-size: 1.0625rem;
+  caret-color: var(--acento);
+  outline: none;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+.campo-entrada:focus {
+  border-bottom: 1px solid var(--acento);
+  box-shadow: 0 1px 0 var(--acento);
+}
+.campo-entrada[aria-invalid="true"] {
+  border-bottom-color: var(--error);
+}
+.campo-entrada:disabled {
+  opacity: 0.6;
+}
+textarea.campo-entrada {
+  flex-basis: 100%;
+  min-height: 150px;
+  padding: 10px 12px;
+  border: 1px dashed var(--borde);
+  line-height: 1.5;
+  resize: vertical;
+}
+textarea.campo-entrada:focus {
+  border: 1px solid var(--acento);
+  box-shadow: 0 0 0 1px var(--acento);
+}
+textarea.campo-entrada[aria-invalid="true"] {
+  border-color: var(--error);
+}
+.campo-error {
+  flex-basis: 100%;
+  margin: 0;
+  color: var(--error);
+  font-size: 1rem;
+}
+.campo-error::before {
+  content: "! ";
+}
+.formulario-enviar {
+  display: flex;
+  justify-content: center;
+}
+.formulario button.cta {
+  border: 0;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.formulario button.cta[disabled] {
+  opacity: 0.7;
+  cursor: progress;
+  transform: none;
+  box-shadow: none;
+}
+.registro {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding: 14px 0 0;
+  border-top: 2px dashed var(--borde-tenue);
+  color: var(--secundario);
+  font-family: var(--f-mono);
+  font-size: 1rem;
+  list-style: none;
+}
+/* Vacío sigue en la página, para que los lectores de pantalla anuncien lo que llegue */
+.registro:empty {
+  padding: 0;
+  border: 0;
+}
+.registro .ok {
+  color: var(--acento);
+}
+.registro .error {
+  color: var(--error);
+}
+
+/* Sin JavaScript el formulario no envía: queda el aviso con los enlaces */
+[data-js] .contacto-sin-js {
+  display: none;
+}
+
+@media (max-width: 759px) {
+  .campo {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+  }
+  /* En columna, flex-basis sería el alto */
+  .campo > .campo-entrada,
+  .campo > .campo-error {
+    flex-basis: auto;
+  }
+}

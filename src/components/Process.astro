@@ -1,6 +1,6 @@
 ---
 import { getSite, getSteps } from "../lib/content";
-import { progressBar } from "../lib/format";
+import { timelineBar } from "../lib/format";
 import SectionTitle from "./SectionTitle.astro";
 const site = await getSite();
 const steps = await getSteps();
@@ -24,10 +24,12 @@ const ticks = Array.from({ length: 12 }, (_, i) => i * 30);
               </g>
             </svg>
           </div>
-          <span class="barra" aria-hidden="true">
-            {progressBar(data.progress)}
+          <span class="tramo" aria-hidden="true">
+            <span class="barra">{timelineBar(data.start, data.end)}</span>
+            <span class="duracion">{data.duration}</span>
           </span>
           <h3 class="t-paso">{data.title}</h3>
+          <p class="oculto">Duración: {data.duration.replace(/\s*–\s*/g, " a ")}</p>
           <p>{data.text}</p>
         </li>
       ))
@@ -62,11 +64,21 @@ const ticks = Array.from({ length: 12 }, (_, i) => i * 30);
     width: 100%;
     height: 360px;
   }
-  .barra {
-    color: var(--acento);
+  /* Línea de tiempo: el tramo de la fase y, al lado, cuánto dura */
+  .tramo {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2px 12px;
     font-family: var(--f-mono);
     font-size: 1.0625rem;
     white-space: pre;
+  }
+  .barra {
+    color: var(--acento);
+  }
+  .duracion {
+    color: var(--secundario);
   }
   h3 {
     margin: 0;
