@@ -4,17 +4,20 @@ summary: Inventario y caja para almacenes
 problem: "Los almacenes de barrio llevan el stock en cuadernos: no saben qué vence primero ni cuánto venden."
 solution: Un inventario por lotes y un punto de venta con lector de códigos, que vende primero lo que vence antes.
 note: Las capturas usan datos de demostración.
-screenshotBackground: "#eff1f6"
+link:
+  label: Probar la demo de Lumina
+  href: https://lumina-c6p.pages.dev/
+screenshotBackground: "#0a1014"
 screenshots:
   - label: Inventario
-    alt: Inventario de Lumina con veinte productos, sus precios y stock, y avisos de seis lotes por caducar y tres productos con poco stock
+    alt: Inventario de Lumina con catorce productos, sus precios, descuentos y stock, y avisos de cuatro productos por caducar y dos con poco stock
     image: ../../assets/projects/lumina/inventory.png
   - label: Punto de venta
-    alt: Punto de venta de Lumina con una venta de ocho productos en curso
+    alt: Punto de venta de Lumina con una venta de nueve productos en curso, varios con descuento
     image: ../../assets/projects/lumina/pos.png
   - label: Estadísticas
-    alt: Estadísticas de Lumina con las ventas del día, las ventas por mes y los productos más vendidos
+    alt: Panel de Lumina con las ventas del día, las ventas de cada mes comparadas con el año anterior y las ventas de la semana
     image: ../../assets/projects/lumina/statistics.png
   - label: Alertas
-    alt: Alertas de Lumina con los lotes que caducan pronto y los productos con poco stock
+    alt: Notificaciones de Lumina con dos lotes vencidos, cuatro por caducar y dos productos con poco stock
     image: ../../assets/projects/lumina/notifications.png
